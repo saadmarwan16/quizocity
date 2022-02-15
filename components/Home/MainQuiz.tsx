@@ -14,7 +14,7 @@ const MainQuiz: FC = () => {
 
   return (
     <>
-      <div className="mt-4">
+      <div className="mt-6 mb-4 sm:mt-4">
         <Typography className="text-text-disabled">
           Which of two words is more related to the given words below:
         </Typography>
