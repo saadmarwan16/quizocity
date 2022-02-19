@@ -10,19 +10,23 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 import { IUserAnswers } from "../../interfaces";
 import { IQuestions } from "../../interfaces";
-import { QUESTIONS, QUESTIONS_POINTER } from "../../constants/quiz";
+import { ANSWERS, QUESTIONS, QUESTIONS_POINTER } from "../../constants/quiz";
 import { usePagination, useLocalStorageValue } from '@mantine/hooks';
 import useFetch from "react-fetch-hook";
 import useSWR, { Key } from "swr";
+import useIQuestionsPointerLocal from "../../data/custom_hooks/useIQuestionsPointerLocal";
+import useIQuestionsLocal from "../../data/custom_hooks/useIQuestionsLocal";
 
 const QuizContext = createContext<IQuestions | undefined>(undefined);
 
 const QuizHome: NextPage = () => {
   // const [userAnswers, setUserAnswers] = useState<IUserAnswers | null>(null);
-  const [questions, setQuestions] = useLocalStorageValue({key: QUESTIONS});
-  const [questionsPointer, setQuestionsPointer] = useLocalStorageValue<string>({ key: QUESTIONS_POINTER, defaultValue: '1' });
-  const { active } = usePagination({ total: 10, page: parseInt(questionsPointer) });
-  
+  // const [answers, setAnswers] = useLocalStorageValue({key: ANSWERS});
+  // const [questions, setQuestions] = useLocalStorageValue({key: QUESTIONS});
+  const [questions, setQuestions] = useIQuestionsLocal();
+  const [questionsPointer, setQuestionsPointer] = useIQuestionsPointerLocal();
+  const { active } = usePagination({ total: 10, page: questionsPointer });
+
   const fetcher = async (): Promise<IQuestions> => {
     const response = await fetch("https://twinword-word-association-quiz.p.rapidapi.com/type1/?level=3&area=sat", {
       method: "GET",
@@ -38,13 +42,17 @@ const QuizHome: NextPage = () => {
 
   const { data, error } = useSWR("questions", fetcher, {
     revalidateOnFocus: false,
+    // revalidateOnMount: true,
     revalidateOnMount: typeof questions === 'undefined',
     revalidateOnReconnect: false,
     onSuccess: (data, _, __) => {
-      setQuestions(JSON.stringify(data));
+      setQuestions((_) => JSON.stringify(data));
+      // const res = JSON.parse(questions) as IQuestions;
+      // console.log(res);
+      // console.log(typeof res);
     },
   });
-  
+
   // const { isLoading, error, data } = useFetch<IQuestions>("https://twinword-word-association-quiz.p.rapidapi.com/type1/?level=3&area=sat", {
   //   method: "GET",
   //   headers: {
@@ -56,7 +64,7 @@ const QuizHome: NextPage = () => {
   const handleNextClick = (currentPage: number): string => {
     return (currentPage + 1).toString();
   }
-  
+
   return (
     <QuizContext.Provider value={data}>
       <QuizUserCompleted />
@@ -65,16 +73,26 @@ const QuizHome: NextPage = () => {
         style={{ marginLeft: "-2rem", marginRight: "-2rem" }}
       />
       <QuizQuestionsTime questionNumber={active - 1} />
-      {(!data && !error) ? (
+      {typeof questions === 'undefined' ? (
+        <div className="text-text-primary">Loading...</div>
+      ) : (
+        <MainQuiz
+          question={questions!.quizlist[questionsPointer - 1]}
+          // question={data!.quizlist[questionsPointer - 1]}
+          questionNumber={questionsPointer}
+        />
+      )}
+      {/* {(!data && !error) ? (
         <div className="text-text-primary">Loading</div>
       ) : error ? (
         <div className="text-text-primary">Error</div>
       ) : (
         <MainQuiz
-          question={data!.quizlist[parseInt(questionsPointer) - 1]}
-          questionNumber={parseInt(questionsPointer)}
+          question={questions!.quizlist[questionsPointer - 1]}
+          // question={data!.quizlist[questionsPointer - 1]}
+          questionNumber={questionsPointer}
         />
-      )}
+      )} */}
       <div className="flex flex-wrap justify-center gap-2 py-6">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
           <QuizControlsButton
@@ -84,7 +102,7 @@ const QuizHome: NextPage = () => {
         ))}
       </div>
 
-      {parseInt(questionsPointer) < 10 ? (
+      {questionsPointer < 10 ? (
         <QuizNextQuestionButton handleQuestionChange={() => setQuestionsPointer((currentPage) => handleNextClick(parseInt(currentPage)))} />
       ) : (
         <div className="flex justify-end">
