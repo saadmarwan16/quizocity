@@ -12,17 +12,34 @@ export interface IQuestions {
   quizlist: IQuestion[];
 }
 
-export interface IUserAnswers {
+export type IAnswer = string | null;
+
+export interface IAnswers {
   value: [
-    string | null,
-    string | null,
-    string | null,
-    string | null,
-    string | null,
-    string | null,
-    string | null,
-    string | null,
-    string | null,
-    string | null
+    IAnswer,
+    IAnswer,
+    IAnswer,
+    IAnswer,
+    IAnswer,
+    IAnswer,
+    IAnswer,
+    IAnswer,
+    IAnswer,
+    IAnswer
   ];
+}
+
+export interface IQuiz {
+  questions: {
+    getQuestions: IQuestions,
+    setQuestions: (val: string | ((prevState: string) => string)) => void,
+  };
+  answers: {
+    getAnswers: IAnswers,
+    setAnswers: (val: string | ((prevState: string) => string)) => void,
+  };
+  questionsPointer: {
+    getQuestionsPointer: number,
+    setQuestionsPointer: (val: string | ((prevState: string) => string)) => void,
+  };
 }

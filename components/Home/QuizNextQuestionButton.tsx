@@ -1,13 +1,14 @@
 import { Button } from "@mui/material";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
+import { QuizContext } from "../../data/providers";
 
-interface QuizNextQuestionButtonProps {
-  handleQuestionChange: () => void;
-}
+const QuizNextQuestionButton: FunctionComponent = () => {
+  const {questionsPointer: { setQuestionsPointer }} = useContext(QuizContext)!;
 
-const QuizNextQuestionButton: FunctionComponent<
-  QuizNextQuestionButtonProps
-> = ({ handleQuestionChange }) => {
+  const handleNextClick = (currentPage: number): string => {
+    return (currentPage + 1).toString();
+  }
+
   return (
     <div className="flex justify-end">
       <Button
@@ -15,7 +16,7 @@ const QuizNextQuestionButton: FunctionComponent<
         disableElevation
         color="secondary"
         style={{ textTransform: "none", backgroundColor: "#d500f9" }}
-        onClick={() => handleQuestionChange()}
+        onClick={() => setQuestionsPointer((current) => handleNextClick(parseInt(current)))}
       >
         Next question
       </Button>

@@ -3,39 +3,36 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from "@mui/material/Typography";
-import { ChangeEvent, useState, FunctionComponent } from "react";
-import { IQuestion, IUserAnswers } from "../../interfaces";
+import { ChangeEvent, useState, FunctionComponent, useContext } from "react";
+import { QuizContext } from "../../data/providers";
 
 const capitalize = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-interface MainQuizProps {
-  question: IQuestion,
-  questionNumber: number,
-  // answers: IUserAnswers,
-}
-
-const MainQuiz: FunctionComponent<MainQuizProps> = ({
-  question: { option, quiz },
-  questionNumber,
-  // answers,
-}) => {
+const MainQuiz: FunctionComponent = () => {
   const [value, setValue] = useState<string | null>(null);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    // answers.value[questionNumber] = value;
-    // console.log(answers);
     setValue(event.target.value);
   };
 
-  const getBorderColor = (radioValue: string | null, optionValue: string): string => {
+  const getBorderColor = (
+    radioValue: string | null,
+    optionValue: string
+  ): string => {
     if (radioValue === optionValue) {
       return "border-teal-700";
     } else {
       return "border-text-disabled";
     }
-  }
+  };
+
+  const {
+    questionsPointer: { getQuestionsPointer },
+    questions: { getQuestions },
+  } = useContext(QuizContext)!;
+  const { option, quiz } = getQuestions.quizlist[getQuestionsPointer];
 
   return (
     <>
@@ -55,7 +52,12 @@ const MainQuiz: FunctionComponent<MainQuizProps> = ({
           onChange={handleChange}
           className="flex gap-3 flex-cols"
         >
-          <div className={`pl-4 border rounded-md ${getBorderColor(value, option[0])}`}>
+          <div
+            className={`pl-4 border rounded-md ${getBorderColor(
+              value,
+              option[0]
+            )}`}
+          >
             <FormControlLabel
               value={option[0]}
               control={<Radio className="text-text-primary" />}
@@ -63,7 +65,12 @@ const MainQuiz: FunctionComponent<MainQuizProps> = ({
               className="w-full text-text-primary"
             />
           </div>
-          <div className={`pl-4 border rounded-md ${getBorderColor(value, option[1])}`}>
+          <div
+            className={`pl-4 border rounded-md ${getBorderColor(
+              value,
+              option[1]
+            )}`}
+          >
             <FormControlLabel
               value={option[1]}
               control={<Radio className="text-text-primary" />}

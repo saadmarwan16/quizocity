@@ -1,11 +1,14 @@
 import Button from "@mui/material/Button";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
+import { QuizContext } from "../../data/providers";
 
 interface QuizControlsButtonProps {
-  onClick: () => void,
+  clickedNum: number,
 }
  
-const QuizControlsButton: FunctionComponent<QuizControlsButtonProps> = ({onClick}) => {
+const QuizControlsButton: FunctionComponent<QuizControlsButtonProps> = ({clickedNum}) => {
+  const {questionsPointer: { setQuestionsPointer }} = useContext(QuizContext)!;
+  
   return ( 
     <Button
           variant="contained"
@@ -16,7 +19,7 @@ const QuizControlsButton: FunctionComponent<QuizControlsButtonProps> = ({onClick
             padding: 0,
             backgroundColor: "#ffffff80",
           }}
-          onClick={onClick}
+          onClick={() => setQuestionsPointer((_) => clickedNum.toString())}
         />
    );
 }
