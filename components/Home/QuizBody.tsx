@@ -9,10 +9,11 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 import { QuizContext } from "../../data/providers";
 
-interface QuizBodyProps {}
-
-const QuizBody: FunctionComponent<QuizBodyProps> = () => {
-    const {questionsPointer: { getQuestionsPointer }} = useContext(QuizContext)!;
+const QuizBody: FunctionComponent = () => {
+  const {
+    questionsPointer: { getQuestionsPointer },
+  } = useContext(QuizContext)!;
+  
   return (
     <>
       <QuizUserCompleted />
@@ -23,15 +24,12 @@ const QuizBody: FunctionComponent<QuizBodyProps> = () => {
       <QuizQuestionsTime />
       <MainQuiz />
       <div className="flex flex-wrap justify-center gap-2 py-6">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-          <QuizControlsButton
-            clickedNum={num}
-            key={num}
-          />
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+          <QuizControlsButton clickedNum={num} key={num} />
         ))}
       </div>
 
-      {getQuestionsPointer! < 10 ? (
+      {getQuestionsPointer < 9 ? (
         <QuizNextQuestionButton />
       ) : (
         <div className="flex justify-end">

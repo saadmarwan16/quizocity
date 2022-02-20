@@ -1,11 +1,7 @@
 import { Avatar, LinearProgress, linearProgressClasses, Typography } from "@mui/material";
 import { FunctionComponent } from "react";
-
-interface QuizUserCompletedProps {
-    
-}
  
-const QuizUserCompleted: FunctionComponent<QuizUserCompletedProps> = () => {
+const QuizUserCompleted: FunctionComponent = () => {
     return ( 
         <div className="flex flex-col justify-between gap-3 sm:flex-row md:gap-0">
             <div className="flex items-center gap-3">

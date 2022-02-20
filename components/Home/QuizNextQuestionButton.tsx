@@ -3,7 +3,7 @@ import { FunctionComponent, useContext } from "react";
 import { QuizContext } from "../../data/providers";
 
 const QuizNextQuestionButton: FunctionComponent = () => {
-  const {questionsPointer: { setQuestionsPointer }} = useContext(QuizContext)!;
+  const {questionsPointer: { getQuestionsPointer, setQuestionsPointer }} = useContext(QuizContext)!;
 
   const handleNextClick = (currentPage: number): string => {
     return (currentPage + 1).toString();
@@ -16,7 +16,7 @@ const QuizNextQuestionButton: FunctionComponent = () => {
         disableElevation
         color="secondary"
         style={{ textTransform: "none", backgroundColor: "#d500f9" }}
-        onClick={() => setQuestionsPointer((current) => handleNextClick(parseInt(current)))}
+        onClick={() => setQuestionsPointer(getQuestionsPointer + 1)}
       >
         Next question
       </Button>

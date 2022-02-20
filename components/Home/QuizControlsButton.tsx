@@ -19,7 +19,7 @@ const QuizControlsButton: FunctionComponent<QuizControlsButtonProps> = ({clicked
             padding: 0,
             backgroundColor: "#ffffff80",
           }}
-          onClick={() => setQuestionsPointer((_) => clickedNum.toString())}
+          onClick={() => setQuestionsPointer(clickedNum)}
         />
    );
 }

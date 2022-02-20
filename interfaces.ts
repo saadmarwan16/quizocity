@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface IQuestion {
   correct: number;
   option: [string, string];
@@ -14,32 +16,30 @@ export interface IQuestions {
 
 export type IAnswer = string | null;
 
-export interface IAnswers {
-  value: [
-    IAnswer,
-    IAnswer,
-    IAnswer,
-    IAnswer,
-    IAnswer,
-    IAnswer,
-    IAnswer,
-    IAnswer,
-    IAnswer,
-    IAnswer
-  ];
-}
+export type IAnswers = [
+  IAnswer,
+  IAnswer,
+  IAnswer,
+  IAnswer,
+  IAnswer,
+  IAnswer,
+  IAnswer,
+  IAnswer,
+  IAnswer,
+  IAnswer
+];
 
 export interface IQuiz {
   questions: {
-    getQuestions: IQuestions,
-    setQuestions: (val: string | ((prevState: string) => string)) => void,
+    getQuestions: IQuestions;
+    setQuestions: (data: IQuestions) => void;
   };
   answers: {
-    getAnswers: IAnswers,
-    setAnswers: (val: string | ((prevState: string) => string)) => void,
+    getAnswers: IAnswers;
+    setAnswers: (data: IAnswers) => void;
   };
   questionsPointer: {
-    getQuestionsPointer: number,
-    setQuestionsPointer: (val: string | ((prevState: string) => string)) => void,
+    getQuestionsPointer: number;
+    setQuestionsPointer: (data: number) => void;
   };
 }

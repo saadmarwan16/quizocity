@@ -1,4 +1,4 @@
-import { IQuestions } from "./interfaces";
+import { IAnswers, IQuestions } from "./interfaces";
 
 export const questions: IQuestions = {
   area: "sat",
@@ -58,3 +58,16 @@ export const questions: IQuestions = {
     },
   ],
 };
+
+export const initialAnswers: IAnswers = [
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+];

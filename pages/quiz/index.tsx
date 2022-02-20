@@ -1,37 +1,42 @@
 import { NextPage } from "next";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IQuestions, IQuiz } from "../../interfaces";
-import useSWR from "swr";
-import useIQuestionsPointerLocal from "../../data/custom_hooks/useIQuestionsPointerLocal";
-import useIQuestionsLocal from "../../data/custom_hooks/useIQuestionsLocal";
-import useIAnswersLocal from "../../data/custom_hooks/useIAnswersLocal";
 import QuizBody from "../../components/Home/QuizBody";
 import { QuizContext } from "../../data/providers";
+import { initialAnswers, questions as questn } from "../../data";
+import {
+  getQuestionsLocal,
+  useQuestionsLocal,
+} from "../../data/local_data_sources/questionsLocal";
+import { getAnswersLocal, useAnswersLocal } from "../../data/local_data_sources/answersLocal";
+import { getQuestionsPointerLocal, useQuestionPointerLocal } from "../../data/local_data_sources/questionsPointerLocal";
 
-interface QuizProps {
-  apiUrl: string,
-  apiKey: string,
-  apiHost: string,
-}
-
-const Quiz: NextPage<QuizProps> = () => {
-  const [answers, setAnswers] = useIAnswersLocal();
-  const [questions, setQuestions] = useIQuestionsLocal();
-  const [questionsPointer, setQuestionsPointer] = useIQuestionsPointerLocal();
-  
-  const isDataLoaded = () => {
-    return typeof questions !== 'undefined' && typeof answers !== undefined && typeof questionsPointer !== 'undefined';
-  };
-
+const Quiz: NextPage = () => {
+  const [questions, setQuestions] = useQuestionsLocal();
+  const [answers, setAnswers] = useAnswersLocal();
+  const [questionsPointer, setQuestionsPointer] = useQuestionPointerLocal();
 
   const [quiz, setQuiz] = useState<IQuiz | null>(null);
+
+  const getQuiz = useCallback(
+    (questions: IQuestions) => {
+      setQuiz((_) => ({
+        answers: { getAnswers: answers!, setAnswers },
+        questions: { getQuestions: questions!, setQuestions },
+        questionsPointer: {
+          getQuestionsPointer: questionsPointer!,
+          setQuestionsPointer,
+        },
+      }));
+    },
+    [answers, setAnswers, setQuestions, questionsPointer, setQuestionsPointer]
+  );
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
   const apiHost = process.env.NEXT_PUBLIC_API_HOST as string;
   const apiKey = process.env.NEXT_PUBLIC_API_KEY as string;
 
-
-  const fetcher = async (): Promise<IQuestions> => {
+  const fetcher = useCallback(async () => {
     const response = await fetch(`${apiUrl}/?level=3&area=sat`, {
       method: "GET",
       headers: {
@@ -42,24 +47,44 @@ const Quiz: NextPage<QuizProps> = () => {
     const results = await response.json();
 
     return results;
-  };
+  }, [apiHost, apiKey, apiUrl]);
 
-  const { data, error } = useSWR("questions", fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnMount: typeof questions === 'undefined',
-    revalidateOnReconnect: false,
-    onSuccess: (data, _, __) => {
-      setQuestions((_) => JSON.stringify(data));
-    },
-  });
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      console.log("got questions");
+      const results = (await fetcher()) as IQuestions;
+      setQuestions(results);
+      setAnswers(initialAnswers);
+      setQuestionsPointer(0);
+      setQuiz({
+        questions: { getQuestions: results, setQuestions },
+        answers: { getAnswers: initialAnswers, setAnswers },
+        questionsPointer: { getQuestionsPointer: 0, setQuestionsPointer },
+      });
+    };
+
+    if (!!getQuestionsLocal()) {
+      setQuiz({
+        questions: { getQuestions: getQuestionsLocal()!, setQuestions },
+        answers: { getAnswers: getAnswersLocal()!, setAnswers },
+        questionsPointer: { getQuestionsPointer: getQuestionsPointerLocal()!, setQuestionsPointer },
+      });
+    } else {
+      fetchQuestions();
+    }
+
+    return () => {
+      console.log("unmounted");
+    };
+  }, [fetcher, questions, getQuiz, setQuestions, setAnswers, setQuestionsPointer]);
 
   return (
     <QuizContext.Provider value={quiz}>
-      {/* <div className="text-text-primary">Hello, Mom...</div> */}
       {quiz === null ? (
         <div className="text-text-primary">Loading...</div>
-      ): (
-        <QuizBody /> 
+      ) : (
+        <QuizBody />
+        // <div className="text-text-primary">Hello, Mom...</div>
       )}
     </QuizContext.Provider>
   );
