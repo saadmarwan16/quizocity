@@ -28,14 +28,15 @@ const MainQuiz: FunctionComponent = () => {
     }
   };
 
-  const {
-    questionsPointer: { getQuestionsPointer },
-    questions: { getQuestions },
-  } = useContext(QuizContext)!;
-  console.log(useContext(QuizContext)!);
-  console.log(getQuestions.quizlist);
-  console.log(getQuestionsPointer);
-  const { option, quiz } = getQuestions.quizlist[getQuestionsPointer];
+  // const {
+  //   questionsPointer: { getQuestionsPointer },
+  //   questions: { getQuestions },
+  // } = useContext(QuizContext)!;
+  const {quizlist} = useContext(QuizContext)!;
+  // console.log(useContext(QuizContext)!);
+  // console.log(getQuestions.quizlist);
+  // console.log(getQuestionsPointer);
+  const { option, quiz } = quizlist[1];
 
   return (
     <>

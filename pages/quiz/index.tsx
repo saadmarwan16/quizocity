@@ -8,29 +8,31 @@ import {
   getQuestionsLocal,
   useQuestionsLocal,
 } from "../../data/local_data_sources/questionsLocal";
-import { getAnswersLocal, useAnswersLocal } from "../../data/local_data_sources/answersLocal";
-import { getQuestionsPointerLocal, useQuestionPointerLocal } from "../../data/local_data_sources/questionsPointerLocal";
+import {
+  getAnswersLocal,
+  useAnswersLocal,
+} from "../../data/local_data_sources/answersLocal";
+import {
+  getQuestionsPointerLocal,
+  useQuestionPointerLocal,
+} from "../../data/local_data_sources/questionsPointerLocal";
+import MainQuiz from "../../components/Home/MainQuiz";
 
 const Quiz: NextPage = () => {
   const [questions, setQuestions] = useQuestionsLocal();
-  const [answers, setAnswers] = useAnswersLocal();
-  const [questionsPointer, setQuestionsPointer] = useQuestionPointerLocal();
+  // const [answers, setAnswers] = useAnswersLocal();
+  // const [questionsPointer, setQuestionsPointer] = useQuestionPointerLocal();
 
-  const [quiz, setQuiz] = useState<IQuiz | null>(null);
+  // const quiz: IQuiz = {
+  //   questions: { getQuestions: questions, setQuestions },
+  //   answers: { getAnswers: answers, setAnswers },
+  //   questionsPointer: {
+  //     getQuestionsPointer: questionsPointer,
+  //     setQuestionsPointer,
+  //   },
+  // };
 
-  const getQuiz = useCallback(
-    (questions: IQuestions) => {
-      setQuiz((_) => ({
-        answers: { getAnswers: answers!, setAnswers },
-        questions: { getQuestions: questions!, setQuestions },
-        questionsPointer: {
-          getQuestionsPointer: questionsPointer!,
-          setQuestionsPointer,
-        },
-      }));
-    },
-    [answers, setAnswers, setQuestions, questionsPointer, setQuestionsPointer]
-  );
+  // const [questions, setQuestions] = useState<IQuestions | null>(null);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
   const apiHost = process.env.NEXT_PUBLIC_API_HOST as string;
@@ -50,25 +52,15 @@ const Quiz: NextPage = () => {
   }, [apiHost, apiKey, apiUrl]);
 
   useEffect(() => {
+    console.log("update");
     const fetchQuestions = async () => {
-      console.log("got questions");
+      console.log('called api');
       const results = (await fetcher()) as IQuestions;
       setQuestions(results);
-      setAnswers(initialAnswers);
-      setQuestionsPointer(0);
-      setQuiz({
-        questions: { getQuestions: results, setQuestions },
-        answers: { getAnswers: initialAnswers, setAnswers },
-        questionsPointer: { getQuestionsPointer: 0, setQuestionsPointer },
-      });
     };
 
     if (!!getQuestionsLocal()) {
-      setQuiz({
-        questions: { getQuestions: getQuestionsLocal()!, setQuestions },
-        answers: { getAnswers: getAnswersLocal()!, setAnswers },
-        questionsPointer: { getQuestionsPointer: getQuestionsPointerLocal()!, setQuestionsPointer },
-      });
+      setQuestions(getQuestionsLocal()!);
     } else {
       fetchQuestions();
     }
@@ -76,15 +68,15 @@ const Quiz: NextPage = () => {
     return () => {
       console.log("unmounted");
     };
-  }, [fetcher, questions, getQuiz, setQuestions, setAnswers, setQuestionsPointer]);
+  }, [fetcher]);
 
   return (
-    <QuizContext.Provider value={quiz}>
-      {quiz === null ? (
+    <QuizContext.Provider value={questions}>
+      {questions === null ? (
         <div className="text-text-primary">Loading...</div>
       ) : (
-        <QuizBody />
-        // <div className="text-text-primary">Hello, Mom...</div>
+        // <div className="text-text-primary">{questions.area}</div>
+        <MainQuiz />
       )}
     </QuizContext.Provider>
   );

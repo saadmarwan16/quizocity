@@ -31,15 +31,15 @@ export type IAnswers = [
 
 export interface IQuiz {
   questions: {
-    getQuestions: IQuestions;
+    getQuestions: IQuestions | null;
     setQuestions: (data: IQuestions) => void;
   };
   answers: {
-    getAnswers: IAnswers;
+    getAnswers: IAnswers | null;
     setAnswers: (data: IAnswers) => void;
   };
   questionsPointer: {
-    getQuestionsPointer: number;
+    getQuestionsPointer: number | null;
     setQuestionsPointer: (data: number) => void;
   };
 }

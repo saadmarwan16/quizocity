@@ -1,4 +1,4 @@
 import { createContext } from "react";
-import { IQuiz } from "../interfaces";
+import { IQuestions, IQuiz } from "../interfaces";
 
-export const QuizContext = createContext<IQuiz | null>(null);
+export const QuizContext = createContext<IQuestions | null>(null);
