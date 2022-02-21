@@ -7,7 +7,7 @@ import Divider from "@mui/material/Divider";
 import QuizNextQuestionButton from "../../components/Home/QuizNextQuestionButton";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { QuestionsPointerContext } from "../../data/providers";
+import { QuestionsPointerContext } from "../../lib/data/providers";
 
 const QuizBody: FunctionComponent = () => {
   const { questionsPointer } = useContext(QuestionsPointerContext)!;

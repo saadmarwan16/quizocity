@@ -10,7 +10,13 @@ interface IStaticProps {
 }
 
 const useTodo = () => {
-  const fetcher = async ({url, args}: {url: Key, args: any}): Promise<Fetcher> => {
+  const fetcher = async ({
+    url,
+    args,
+  }: {
+    url: Key;
+    args: any;
+  }): Promise<Fetcher> => {
     console.log(url);
     const response = await fetch(url!.toString(), args);
     const results = response.json();

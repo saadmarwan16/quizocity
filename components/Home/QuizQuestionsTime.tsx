@@ -1,6 +1,6 @@
 import { CircularProgress, Typography } from "@mui/material";
 import { FunctionComponent, useContext } from "react";
-import { QuestionsPointerContext } from "../../data/providers";
+import { QuestionsPointerContext } from "../../lib/data/providers";
 
 const QuizQuestionsTime: FunctionComponent = () => {
   const { questionsPointer } = useContext(QuestionsPointerContext)!;

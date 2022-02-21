@@ -12,7 +12,6 @@ export interface IQuestions {
   quizlist: IQuestion[];
 }
 
-
 // export interface IQuiz {
 //   questions: {
 //     getQuestions: IQuestions | null;

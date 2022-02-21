@@ -1,4 +1,5 @@
-import { IAnswers, IQuestions } from "./interfaces";
+import { IQuestions } from "./data_types/interfaces";
+import { IAnswers } from "./data_types/types";
 
 export const questions: IQuestions = {
   area: "sat",

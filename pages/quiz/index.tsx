@@ -1,24 +1,24 @@
 import { NextPage } from "next";
-import { useCallback, useEffect, useState } from "react";
-import { IQuestions } from "../../data_types/interfaces";
+import { useCallback, useEffect } from "react";
+import { IQuestions } from "../../lib/data_types/interfaces";
 import {
   QuestionsContext,
   AnswersContext,
   QuestionsPointerContext,
-} from "../../data/providers";
-import { initialAnswers } from "../../data";
+} from "../../lib/data/providers";
+import { initialAnswers } from "../../lib/data";
 import {
   getQuestionsLocal,
   useQuestionsLocal,
-} from "../../data/local_data_sources/questionsLocal";
+} from "../../lib/data/local_data_sources/questionsLocal";
 import {
   getAnswersLocal,
   useAnswersLocal,
-} from "../../data/local_data_sources/answersLocal";
+} from "../../lib/data/local_data_sources/answersLocal";
 import {
   getQuestionsPointerLocal,
   useQuestionPointerLocal,
-} from "../../data/local_data_sources/questionsPointerLocal";
+} from "../../lib/data/local_data_sources/questionsPointerLocal";
 import QuizBody from "../../components/Home/QuizBody";
 
 const Quiz: NextPage = () => {
@@ -64,7 +64,7 @@ const Quiz: NextPage = () => {
     return () => {
       console.log("unmounted");
     };
-  }, [fetcher, setAnswers, setQuestions, setQuestionsPointer]);
+  }, [fetcher]);
 
   return (
     <>

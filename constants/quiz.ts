@@ -1,3 +1,0 @@
-export const QUESTIONS = 'QUESTIONS';
-export const ANSWERS = 'ANSWERS';
-export const QUESTIONS_POINTER = 'QUESTIONS_POINTER';

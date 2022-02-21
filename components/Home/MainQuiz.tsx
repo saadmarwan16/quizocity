@@ -7,7 +7,7 @@ import { ChangeEvent, useState, FunctionComponent, useContext } from "react";
 import {
   QuestionsContext,
   QuestionsPointerContext,
-} from "../../data/providers";
+} from "../../lib/data/providers";
 
 const capitalize = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -28,7 +28,7 @@ const MainQuiz: FunctionComponent = () => {
   const [value, setValue] = useState<string | null>(null);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log('answer change');
+    console.log("answer change");
     setValue(event.target.value);
   };
 
