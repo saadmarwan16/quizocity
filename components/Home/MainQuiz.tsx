@@ -4,39 +4,39 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from "@mui/material/Typography";
 import { ChangeEvent, useState, FunctionComponent, useContext } from "react";
-import { QuizContext } from "../../data/providers";
+import {
+  QuestionsContext,
+  QuestionsPointerContext,
+} from "../../data/providers";
 
 const capitalize = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+const getBorderColor = (
+  radioValue: string | null,
+  optionValue: string
+): string => {
+  if (radioValue === optionValue) {
+    return "border-teal-700";
+  } else {
+    return "border-text-disabled";
+  }
 };
 
 const MainQuiz: FunctionComponent = () => {
   const [value, setValue] = useState<string | null>(null);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log('answer change');
     setValue(event.target.value);
   };
 
-  const getBorderColor = (
-    radioValue: string | null,
-    optionValue: string
-  ): string => {
-    if (radioValue === optionValue) {
-      return "border-teal-700";
-    } else {
-      return "border-text-disabled";
-    }
-  };
-
-  // const {
-  //   questionsPointer: { getQuestionsPointer },
-  //   questions: { getQuestions },
-  // } = useContext(QuizContext)!;
-  const {quizlist} = useContext(QuizContext)!;
-  // console.log(useContext(QuizContext)!);
-  // console.log(getQuestions.quizlist);
-  // console.log(getQuestionsPointer);
-  const { option, quiz } = quizlist[1];
+  const {
+    questions: { quizlist },
+  } = useContext(QuestionsContext)!;
+  const { questionsPointer } = useContext(QuestionsPointerContext)!;
+  const { option, quiz } = quizlist[questionsPointer];
 
   return (
     <>

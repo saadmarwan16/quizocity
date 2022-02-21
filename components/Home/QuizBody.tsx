@@ -7,13 +7,11 @@ import Divider from "@mui/material/Divider";
 import QuizNextQuestionButton from "../../components/Home/QuizNextQuestionButton";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { QuizContext } from "../../data/providers";
+import { QuestionsPointerContext } from "../../data/providers";
 
 const QuizBody: FunctionComponent = () => {
-  const {
-    questionsPointer: { getQuestionsPointer },
-  } = useContext(QuizContext)!;
-  
+  const { questionsPointer } = useContext(QuestionsPointerContext)!;
+
   return (
     <>
       <QuizUserCompleted />
@@ -29,7 +27,7 @@ const QuizBody: FunctionComponent = () => {
         ))}
       </div>
 
-      {getQuestionsPointer < 9 ? (
+      {questionsPointer < 9 ? (
         <QuizNextQuestionButton />
       ) : (
         <div className="flex justify-end">

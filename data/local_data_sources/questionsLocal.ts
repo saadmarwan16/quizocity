@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { QUESTIONS } from "../../constants/quiz";
-import { IQuestions } from "../../interfaces";
+import { IQuestions } from "../../data_types/interfaces";
 
 export const getQuestionsLocal = () => {
   const res = localStorage.getItem(QUESTIONS);

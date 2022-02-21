@@ -1,9 +1,9 @@
 import { CircularProgress, Typography } from "@mui/material";
 import { FunctionComponent, useContext } from "react";
-import { QuizContext } from "../../data/providers";
+import { QuestionsPointerContext } from "../../data/providers";
 
 const QuizQuestionsTime: FunctionComponent = () => {
-  const { questionsPointer: {getQuestionsPointer} } = useContext(QuizContext)!;
+  const { questionsPointer } = useContext(QuestionsPointerContext)!;
 
   return (
     <div className="flex flex-col justify-between mt-8 sm:mt-4 sm:flex-row sm:items-center">
@@ -11,7 +11,7 @@ const QuizQuestionsTime: FunctionComponent = () => {
         <Typography className="text-text-disabled">Questions</Typography>
         <div className="flex items-center gap-1">
           <Typography className="text-3xl text-text-primary">
-            {getQuestionsPointer + 1}
+            {questionsPointer + 1}
           </Typography>
           <Typography className="text-text-secondary">/</Typography>
           <Typography className="text-text-secondary">10</Typography>

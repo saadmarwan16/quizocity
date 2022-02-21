@@ -1,9 +1,12 @@
 import { NextPage } from "next";
 import { useCallback, useEffect, useState } from "react";
-import { IQuestions, IQuiz } from "../../interfaces";
-import QuizBody from "../../components/Home/QuizBody";
-import { QuizContext } from "../../data/providers";
-import { initialAnswers, questions as questn } from "../../data";
+import { IQuestions } from "../../data_types/interfaces";
+import {
+  QuestionsContext,
+  AnswersContext,
+  QuestionsPointerContext,
+} from "../../data/providers";
+import { initialAnswers } from "../../data";
 import {
   getQuestionsLocal,
   useQuestionsLocal,
@@ -16,23 +19,12 @@ import {
   getQuestionsPointerLocal,
   useQuestionPointerLocal,
 } from "../../data/local_data_sources/questionsPointerLocal";
-import MainQuiz from "../../components/Home/MainQuiz";
+import QuizBody from "../../components/Home/QuizBody";
 
 const Quiz: NextPage = () => {
   const [questions, setQuestions] = useQuestionsLocal();
-  // const [answers, setAnswers] = useAnswersLocal();
-  // const [questionsPointer, setQuestionsPointer] = useQuestionPointerLocal();
-
-  // const quiz: IQuiz = {
-  //   questions: { getQuestions: questions, setQuestions },
-  //   answers: { getAnswers: answers, setAnswers },
-  //   questionsPointer: {
-  //     getQuestionsPointer: questionsPointer,
-  //     setQuestionsPointer,
-  //   },
-  // };
-
-  // const [questions, setQuestions] = useState<IQuestions | null>(null);
+  const [answers, setAnswers] = useAnswersLocal();
+  const [questionsPointer, setQuestionsPointer] = useQuestionPointerLocal();
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
   const apiHost = process.env.NEXT_PUBLIC_API_HOST as string;
@@ -54,13 +46,17 @@ const Quiz: NextPage = () => {
   useEffect(() => {
     console.log("update");
     const fetchQuestions = async () => {
-      console.log('called api');
+      console.log("called api");
       const results = (await fetcher()) as IQuestions;
       setQuestions(results);
+      setAnswers(initialAnswers);
+      setQuestionsPointer(0);
     };
 
     if (!!getQuestionsLocal()) {
       setQuestions(getQuestionsLocal()!);
+      setAnswers(getAnswersLocal()!);
+      setQuestionsPointer(getQuestionsPointerLocal()!);
     } else {
       fetchQuestions();
     }
@@ -68,17 +64,24 @@ const Quiz: NextPage = () => {
     return () => {
       console.log("unmounted");
     };
-  }, [fetcher]);
+  }, [fetcher, setAnswers, setQuestions, setQuestionsPointer]);
 
   return (
-    <QuizContext.Provider value={questions}>
-      {questions === null ? (
+    <>
+      {questions === null || answers === null || questionsPointer === null ? (
         <div className="text-text-primary">Loading...</div>
       ) : (
-        // <div className="text-text-primary">{questions.area}</div>
-        <MainQuiz />
+        <QuestionsContext.Provider value={{ questions, setQuestions }}>
+          <AnswersContext.Provider value={{ answers, setAnswers }}>
+            <QuestionsPointerContext.Provider
+              value={{ questionsPointer, setQuestionsPointer }}
+            >
+              <QuizBody />
+            </QuestionsPointerContext.Provider>
+          </AnswersContext.Provider>
+        </QuestionsContext.Provider>
       )}
-    </QuizContext.Provider>
+    </>
   );
 };
 

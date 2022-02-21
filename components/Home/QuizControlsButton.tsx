@@ -1,13 +1,13 @@
 import Button from "@mui/material/Button";
 import { FunctionComponent, useContext } from "react";
-import { QuizContext } from "../../data/providers";
+import { QuestionsPointerContext } from "../../data/providers";
 
 interface QuizControlsButtonProps {
   clickedNum: number,
 }
  
 const QuizControlsButton: FunctionComponent<QuizControlsButtonProps> = ({clickedNum}) => {
-  const {questionsPointer: { setQuestionsPointer }} = useContext(QuizContext)!;
+  const {setQuestionsPointer} = useContext(QuestionsPointerContext)!;
   
   return ( 
     <Button
