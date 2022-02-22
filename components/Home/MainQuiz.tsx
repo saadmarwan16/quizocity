@@ -5,9 +5,11 @@ import FormControl from "@mui/material/FormControl";
 import Typography from "@mui/material/Typography";
 import { ChangeEvent, useState, FunctionComponent, useContext } from "react";
 import {
+  AnswersContext,
   QuestionsContext,
   QuestionsPointerContext,
 } from "../../lib/data/providers";
+import { IAnswers } from "../../lib/data_types/types";
 
 const capitalize = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -25,18 +27,20 @@ const getBorderColor = (
 };
 
 const MainQuiz: FunctionComponent = () => {
-  const [value, setValue] = useState<string | null>(null);
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log("answer change");
-    setValue(event.target.value);
-  };
-
+  const { answers, setAnswers } = useContext(AnswersContext)!;
   const {
     questions: { quizlist },
   } = useContext(QuestionsContext)!;
   const { questionsPointer } = useContext(QuestionsPointerContext)!;
   const { option, quiz } = quizlist[questionsPointer];
+  const answer = answers[questionsPointer];
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const res: IAnswers = answers.map((value, index) =>
+      index === questionsPointer ? event.target.value : value
+    ) as IAnswers;
+    setAnswers(res);
+  };
 
   return (
     <>
@@ -52,32 +56,50 @@ const MainQuiz: FunctionComponent = () => {
         <RadioGroup
           aria-labelledby="demo-controlled-radio-buttons-group"
           name="controlled-radio-buttons-group"
-          value={value}
+          value={answer}
           onChange={handleChange}
           className="flex gap-3 flex-cols"
         >
           <div
             className={`pl-4 border rounded-md ${getBorderColor(
-              value,
+              answer,
               option[0]
             )}`}
           >
             <FormControlLabel
               value={option[0]}
-              control={<Radio className="text-text-primary" />}
+              control={
+                <Radio
+                  className="text-text-primary"
+                  sx={{
+                    "> span": {
+                      color: option[0] !== answer ? "#ffffff" : null,
+                    },
+                  }}
+                />
+              }
               label={capitalize(option[0])}
               className="w-full text-text-primary"
             />
           </div>
           <div
             className={`pl-4 border rounded-md ${getBorderColor(
-              value,
+              answer,
               option[1]
             )}`}
           >
             <FormControlLabel
               value={option[1]}
-              control={<Radio className="text-text-primary" />}
+              control={
+                <Radio
+                  className="text-text-primary"
+                  sx={{
+                    "> span": {
+                      color: option[1] !== answer ? "#ffffff" : null,
+                    },
+                  }}
+                />
+              }
               label={capitalize(option[1])}
               className="w-full text-text-primary"
             />

@@ -8,13 +8,15 @@ const QuizQuestionsTime: FunctionComponent = () => {
   return (
     <div className="flex flex-col justify-between mt-8 sm:mt-4 sm:flex-row sm:items-center">
       <div className="flex items-center gap-2">
-        <Typography className="text-text-disabled">Questions</Typography>
+        <Typography className="pr-2 text-text-disabled">Questions</Typography>
         <div className="flex items-center gap-1">
-          <Typography className="text-3xl text-text-primary">
+          <Typography variant="h4" component="p" color="text.primary">
             {questionsPointer + 1}
           </Typography>
-          <Typography className="text-text-secondary">/</Typography>
-          <Typography className="text-text-secondary">10</Typography>
+          <Typography variant="h5" component="p" color="text.secondary">/</Typography>
+          <Typography variant="body2" component="p" color="text.disabled">
+            10
+          </Typography>
         </div>
       </div>
       <div className="flex items-center gap-3">

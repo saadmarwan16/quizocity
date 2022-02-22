@@ -7,10 +7,11 @@ import Divider from "@mui/material/Divider";
 import QuizNextQuestionButton from "../../components/Home/QuizNextQuestionButton";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { QuestionsPointerContext } from "../../lib/data/providers";
+import { AnswersContext, QuestionsPointerContext } from "../../lib/data/providers";
 
 const QuizBody: FunctionComponent = () => {
   const { questionsPointer } = useContext(QuestionsPointerContext)!;
+  const {answers} = useContext(AnswersContext)!;
 
   return (
     <>
@@ -23,7 +24,7 @@ const QuizBody: FunctionComponent = () => {
       <MainQuiz />
       <div className="flex flex-wrap justify-center gap-2 py-6">
         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-          <QuizControlsButton clickedNum={num} key={num} />
+          <QuizControlsButton clickedNum={num} key={num} isAnswered={!!answers[num]} />
         ))}
       </div>
 

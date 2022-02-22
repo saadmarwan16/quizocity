@@ -4,10 +4,12 @@ import { QuestionsPointerContext } from "../../lib/data/providers";
 
 interface QuizControlsButtonProps {
   clickedNum: number;
+  isAnswered: boolean;
 }
 
 const QuizControlsButton: FunctionComponent<QuizControlsButtonProps> = ({
   clickedNum,
+  isAnswered,
 }) => {
   const { setQuestionsPointer } = useContext(QuestionsPointerContext)!;
 
@@ -19,7 +21,8 @@ const QuizControlsButton: FunctionComponent<QuizControlsButtonProps> = ({
         minWidth: 20,
         minHeight: 20,
         padding: 0,
-        backgroundColor: "#ffffff80",
+        backgroundColor: isAnswered ? "#00796B" : "#ffffff80",
+        // backgroundColor: "#ffffff80",
       }}
       onClick={() => setQuestionsPointer(clickedNum)}
     />

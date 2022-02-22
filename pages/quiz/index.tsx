@@ -20,6 +20,7 @@ import {
   useQuestionPointerLocal,
 } from "../../lib/data/local_data_sources/questionsPointerLocal";
 import QuizBody from "../../components/Home/QuizBody";
+import { IAnswers } from "../../lib/data_types/types";
 
 const Quiz: NextPage = () => {
   const [questions, setQuestions] = useQuestionsLocal();
@@ -43,28 +44,37 @@ const Quiz: NextPage = () => {
     return results;
   }, [apiHost, apiKey, apiUrl]);
 
+  const getQuiz = useCallback(
+    (questions: IQuestions, answers: IAnswers, questionsPointer: number) => {
+      setQuestions(questions);
+      setAnswers(answers);
+      setQuestionsPointer(questionsPointer);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   useEffect(() => {
-    console.log("update");
     const fetchQuestions = async () => {
-      console.log("called api");
       const results = (await fetcher()) as IQuestions;
-      setQuestions(results);
-      setAnswers(initialAnswers);
-      setQuestionsPointer(0);
+      getQuiz(results, initialAnswers, 0);
     };
 
-    if (!!getQuestionsLocal()) {
-      setQuestions(getQuestionsLocal()!);
-      setAnswers(getAnswersLocal()!);
-      setQuestionsPointer(getQuestionsPointerLocal()!);
-    } else {
+    if (
+      !getQuestionsLocal() ||
+      !getAnswersLocal() ||
+      !getQuestionsPointerLocal()
+    ) {
+      localStorage.clear();
       fetchQuestions();
+    } else {
+      getQuiz(
+        getQuestionsLocal()!,
+        getAnswersLocal()!,
+        getQuestionsPointerLocal()!
+      );
     }
-
-    return () => {
-      console.log("unmounted");
-    };
-  }, [fetcher]);
+  }, [fetcher, getQuiz]);
 
   return (
     <>

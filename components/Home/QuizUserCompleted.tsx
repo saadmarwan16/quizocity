@@ -4,9 +4,13 @@ import {
   linearProgressClasses,
   Typography,
 } from "@mui/material";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
+import { AnswersContext } from "../../lib/data/providers";
 
 const QuizUserCompleted: FunctionComponent = () => {
+  const {answers} = useContext(AnswersContext)!;
+  const percentageCompleted =  answers.filter(answer => answer !== null).length * 10;
+  
   return (
     <div className="flex flex-col justify-between gap-3 sm:flex-row md:gap-0">
       <div className="flex items-center gap-3">
@@ -15,11 +19,11 @@ const QuizUserCompleted: FunctionComponent = () => {
       </div>
       <div className="flex flex-col gap-2">
         <Typography className="text-text-primary">
-          Total Test: 20% completed
+          Total Test: {percentageCompleted}% completed
         </Typography>
         <LinearProgress
           variant="determinate"
-          value={20}
+          value={percentageCompleted}
           color="secondary"
           sx={{
             height: 5,

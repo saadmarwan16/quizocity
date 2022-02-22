@@ -8,6 +8,11 @@ const theme = createTheme({
   palette: {
     primary: teal,
     secondary: purple,
+    text: {
+      primary: "#fff",
+      secondary: "#ffffffb3",
+      disabled: "#ffffff80",
+    },
     divider: "#ffffff1f",
   },
 });
