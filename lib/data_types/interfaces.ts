@@ -11,18 +11,3 @@ export interface IQuestions {
   level: number;
   quizlist: IQuestion[];
 }
-
-// export interface IQuiz {
-//   questions: {
-//     getQuestions: IQuestions | null;
-//     setQuestions: (data: IQuestions) => void;
-//   };
-//   answers: {
-//     getAnswers: IAnswers | null;
-//     setAnswers: (data: IAnswers) => void;
-//   };
-//   questionsPointer: {
-//     getQuestionsPointer: number | null;
-//     setQuestionsPointer: (data: number) => void;
-//   };
-// }

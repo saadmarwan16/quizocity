@@ -29,3 +29,8 @@ export type QuestionsPointerContextValue = {
   questionsPointer: number;
   setQuestionsPointer: (data: number) => void;
 };
+
+export type QuizLocationContextValue = {
+  quizLocation: string | null;
+  setQuizLocation: (data: string) => void;
+}

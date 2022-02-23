@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { purple, teal } from "@mui/material/colors";
 import Head from "next/head";
+import Navbar from "../components/shared/Navbar";
 
 const theme = createTheme({
   palette: {
@@ -27,8 +28,10 @@ function MyApp({ Component, pageProps }: AppProps) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <div className="flex items-center min-h-screen p-0 bg-black md:p-10">
-          <div className="flex flex-col justify-center w-full min-h-screen p-8 mx-auto md:w-4/5 bg-background-paper rounded-xl md:min-h-fit">
+        <div className="flex flex-col">
+          <Navbar />
+
+          <div className="flex items-center min-h-screen p-0 bg-black md:p-10">
             <Component {...pageProps} />
           </div>
         </div>

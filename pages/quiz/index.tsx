@@ -1,10 +1,11 @@
 import { NextPage } from "next";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IQuestions } from "../../lib/data_types/interfaces";
 import {
   QuestionsContext,
   AnswersContext,
   QuestionsPointerContext,
+  QuizLocationContext,
 } from "../../lib/data/providers";
 import { initialAnswers } from "../../lib/data";
 import {
@@ -21,11 +22,14 @@ import {
 } from "../../lib/data/local_data_sources/questionsPointerLocal";
 import QuizBody from "../../components/Home/QuizBody";
 import { IAnswers } from "../../lib/data_types/types";
+import QuizSubmit from "../../components/Home/QuizSubmit";
+import { useQuizLocationLocal } from "../../lib/data/local_data_sources/quizLocationLocal";
 
 const Quiz: NextPage = () => {
   const [questions, setQuestions] = useQuestionsLocal();
   const [answers, setAnswers] = useAnswersLocal();
   const [questionsPointer, setQuestionsPointer] = useQuestionPointerLocal();
+  const [quizLocation, setQuizLocation] = useQuizLocationLocal();
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
   const apiHost = process.env.NEXT_PUBLIC_API_HOST as string;
@@ -77,7 +81,7 @@ const Quiz: NextPage = () => {
   }, [fetcher, getQuiz]);
 
   return (
-    <>
+    <div className="flex flex-col justify-center w-full min-h-screen p-8 mx-auto md:w-4/5 bg-background-paper rounded-xl md:min-h-fit">
       {questions === null || answers === null || questionsPointer === null ? (
         <div className="text-text-primary">Loading...</div>
       ) : (
@@ -86,12 +90,16 @@ const Quiz: NextPage = () => {
             <QuestionsPointerContext.Provider
               value={{ questionsPointer, setQuestionsPointer }}
             >
-              <QuizBody />
+              <QuizLocationContext.Provider
+                value={{ quizLocation, setQuizLocation }}
+              >
+                {quizLocation === "main" || quizLocation === null ? <QuizBody /> : <QuizSubmit />}
+              </QuizLocationContext.Provider>
             </QuestionsPointerContext.Provider>
           </AnswersContext.Provider>
         </QuestionsContext.Provider>
       )}
-    </>
+    </div>
   );
 };
 

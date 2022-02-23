@@ -7,11 +7,12 @@ import Divider from "@mui/material/Divider";
 import QuizNextQuestionButton from "../../components/Home/QuizNextQuestionButton";
 import { Button } from "@mui/material";
 import Link from "next/link";
-import { AnswersContext, QuestionsPointerContext } from "../../lib/data/providers";
+import { AnswersContext, QuestionsPointerContext, QuizLocationContext } from "../../lib/data/providers";
 
 const QuizBody: FunctionComponent = () => {
   const { questionsPointer } = useContext(QuestionsPointerContext)!;
   const {answers} = useContext(AnswersContext)!;
+  const {setQuizLocation} = useContext(QuizLocationContext)!;
 
   return (
     <>
@@ -32,8 +33,6 @@ const QuizBody: FunctionComponent = () => {
         <QuizNextQuestionButton />
       ) : (
         <div className="flex justify-end">
-          <Link href="/submit">
-            <a>
               <Button
                 variant="contained"
                 disableElevation
@@ -42,11 +41,10 @@ const QuizBody: FunctionComponent = () => {
                   textTransform: "none",
                   backgroundColor: "#d500f9",
                 }}
+                onClick={() => setQuizLocation('submit')}
               >
                 Submit page
               </Button>
-            </a>
-          </Link>
         </div>
       )}
     </>
