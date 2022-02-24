@@ -10,21 +10,8 @@ import {
   QuestionsPointerContext,
 } from "../../lib/data/providers";
 import { IAnswers } from "../../lib/data_types/types";
-
-const capitalize = (str: string): string => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
-
-const getBorderColor = (
-  radioValue: string | null,
-  optionValue: string
-): string => {
-  if (radioValue === optionValue) {
-    return "border-teal-700";
-  } else {
-    return "border-text-disabled";
-  }
-};
+import capitalize from "../../lib/utils/capitalize";
+import getBorderColor from "../../lib/utils/getBorderColor";
 
 const MainQuiz: FunctionComponent = () => {
   const { answers, setAnswers } = useContext(AnswersContext)!;

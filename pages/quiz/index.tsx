@@ -24,6 +24,7 @@ import QuizBody from "../../components/Home/QuizBody";
 import { IAnswers } from "../../lib/data_types/types";
 import QuizSubmit from "../../components/Home/QuizSubmit";
 import { useQuizLocationLocal } from "../../lib/data/local_data_sources/quizLocationLocal";
+import QuizComplete from "../../components/Home/QuizComplete";
 
 const Quiz: NextPage = () => {
   const [questions, setQuestions] = useQuestionsLocal();
@@ -81,7 +82,7 @@ const Quiz: NextPage = () => {
   }, [fetcher, getQuiz]);
 
   return (
-    <div className="flex flex-col justify-center w-full min-h-screen p-8 mx-auto md:w-4/5 bg-background-paper rounded-xl md:min-h-fit">
+    <>
       {questions === null || answers === null || questionsPointer === null ? (
         <div className="text-text-primary">Loading...</div>
       ) : (
@@ -93,13 +94,19 @@ const Quiz: NextPage = () => {
               <QuizLocationContext.Provider
                 value={{ quizLocation, setQuizLocation }}
               >
-                {quizLocation === "main" || quizLocation === null ? <QuizBody /> : <QuizSubmit />}
+                {(quizLocation === "main" || quizLocation === null) && (
+                    <div className="flex flex-col justify-center w-full min-h-screen p-8 mx-auto md:w-4/5 bg-background-paper rounded-xl md:min-h-fit">
+                      <QuizBody />
+                    </div>
+                  )}
+                {quizLocation === "submit" && <QuizSubmit />}
+                {quizLocation === "complete" && <QuizComplete />}
               </QuizLocationContext.Provider>
             </QuestionsPointerContext.Provider>
           </AnswersContext.Provider>
         </QuestionsContext.Provider>
       )}
-    </div>
+    </>
   );
 };
 

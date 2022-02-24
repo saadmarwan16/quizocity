@@ -16,3 +16,27 @@ a {
 * {
     box-sizing: border-box;
 }
+
+.border {
+    border: 1px solid white;
+}
+
+.border-teal-700 {
+    border-color: teal;
+}
+
+.border-text-disabled {
+    border-color: '#ffffff80';
+}
+
+.border-disabled {
+    border: 1px solid #ffffff80;
+}
+
+.border-right {
+    border-right-width: 0px;
+}
+
+.border-left {
+    border-left-width: 0px;
+}

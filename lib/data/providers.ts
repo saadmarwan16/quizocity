@@ -1,5 +1,4 @@
 import { createContext } from "react";
-import { IQuestions } from "../data_types/interfaces";
 import {
   AnswersContextValue,
   QuestionsContextValue,

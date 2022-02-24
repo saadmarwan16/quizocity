@@ -1,64 +1,95 @@
 import { FunctionComponent, useContext } from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { Button } from "@mui/material";
-import { QuizLocationContext } from "../../lib/data/providers";
+import { Button, CircularProgress, Typography } from "@mui/material";
+import { AnswersContext, QuizLocationContext } from "../../lib/data/providers";
+import capitalize from "../../lib/utils/capitalize";
 
 const QuizSubmit: FunctionComponent = () => {
+  const { answers } = useContext(AnswersContext)!;
   const { setQuizLocation } = useContext(QuizLocationContext)!;
-  const createData = (name: number, isAnswered: boolean, answer: string) => {
-    return { name, isAnswered, answer };
-  };
-
-  const rows = [
-    createData(1, true, "Government"),
-    createData(2, false, "School"),
-    createData(3, false, "Government"),
-    createData(4, true, "Worship"),
-    createData(5, true, "Government"),
-    createData(6, false, "Government"),
-    createData(7, false, "School"),
-    createData(8, true, "Government"),
-    createData(9, true, "Worship"),
-    createData(10, true, "Government"),
-  ];
 
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Question Number</TableCell>
-              <TableCell>Answered</TableCell>
-              <TableCell>Answer</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell>{row.isAnswered ? "YES" : "NO"}</TableCell>
-                <TableCell>{row.answer}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Button variant="outlined" onClick={() => setQuizLocation("main")}>
-        Go back
-      </Button>
-    </>
+    <div className="flex flex-col w-full p-4 sm:p-8 md:flex-row md:gap-6">
+      <div className="flex items-center justify-center gap-8 mb-8 sm:gap-12 md:gap-16 md:flex-col md:basis-1/3">
+        <div>
+          <Typography className="text-sm md:text-base text-text-secondary">
+            PERCENTAGE COMPLETE
+          </Typography>
+          <Typography className="text-3xl sm:text-5xl md:text-8xl text-text-primary">
+            30%
+          </Typography>
+        </div>
+        <div>
+          <Typography className="text-sm md:text-base text-text-secondary">
+            TIME REMAINING
+          </Typography>
+          <div className="flex items-end">
+            <Typography className="text-3xl sm:text-5xl md:text-8xl text-text-primary">
+              30
+            </Typography>
+            <Typography className="pl-1 mb-1 text-sm md:text-lg text-text-disabled">
+              seconds
+            </Typography>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col gap-3 md:basis-2/3">
+        <div className="flex gap-8 px-3 py-2 rounded-lg bg-background-paper">
+          <Typography className="md:basis-1/3 basis-1/2" color="text.secondary">
+            Question Number
+          </Typography>
+          <Typography className="md:basis-1/3 basis-1/2" color="text.secondary">
+            Answered?
+          </Typography>
+          <Typography
+            className="hidden md:basis-1/3 sm:block"
+            color="text.secondary"
+          >
+            Answer
+          </Typography>
+        </div>
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => (
+          <div
+            key={index}
+            className="flex gap-8 px-3 py-2 rounded-lg bg-background-paper"
+          >
+            <Typography
+              className="md:basis-1/3 basis-1/2"
+              color="text.secondary"
+            >
+              {index + 1}
+            </Typography>
+            <Typography
+              className="md:basis-1/3 basis-1/2"
+              color="text.secondary"
+            >
+              {!!answers[index] ? "YES" : "NO"}
+            </Typography>
+            <Typography
+              className="hidden md:basis-1/3 sm:block"
+              color="text.secondary"
+            >
+              {!!answers[index] ? capitalize(answers[index]!) : "Null"}
+            </Typography>
+          </div>
+        ))}
+        <div className="flex justify-center gap-3 my-4 sm:gap-6 md:gap-10">
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => setQuizLocation("main")}
+          >
+            Go back
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => setQuizLocation("complete")}
+          >
+            Submit
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
 

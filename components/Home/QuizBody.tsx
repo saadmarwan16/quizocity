@@ -37,10 +37,6 @@ const QuizBody: FunctionComponent = () => {
                 variant="contained"
                 disableElevation
                 color="secondary"
-                style={{
-                  textTransform: "none",
-                  backgroundColor: "#d500f9",
-                }}
                 onClick={() => setQuizLocation('submit')}
               >
                 Submit page
