@@ -90,10 +90,10 @@ const Signup: NextPage = () => {
           Register
         </Button>
       </form>
-      <div className="flex flex-wrap justify-center gap-1 mt-4">
+      <div className="flex flex-wrap justify-center gap-2 mt-4">
         <Typography>Already a member?</Typography>
         <Link href={LOGIN}>
-          <a className="text-teal-700 underline">
+          <a className="text-teal-700 underline hover:scale-105">
             <Typography color="primary">Login Now</Typography>
           </a>
         </Link>
