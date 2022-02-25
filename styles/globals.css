@@ -33,6 +33,19 @@ a {
     border: 1px solid #ffffff80;
 }
 
+/* .auth-border-disabled {
+    border: 1px solid #ffffff80;
+}
+
+.auth-border-disabled:hover {
+    border: 0px solid #ffffff80;
+}
+
+.auth-border-disabled:focus  {
+    border: 0px solid #ffffff80;
+    outline: none;
+} */
+
 .border-right {
     border-right-width: 0px;
 }

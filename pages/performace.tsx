@@ -1,11 +1,7 @@
-import { FunctionComponent } from "react";
-
-interface PerformanceProps {
-    
-}
+import { NextPage } from "next";
  
-const Performance: FunctionComponent<PerformanceProps> = () => {
-    return ( <div className="text-text-primary">Performance Page</div> );
+const Performance: NextPage = () => {
+    return ( <div>Performance Page</div> );
 }
  
 export default Performance;

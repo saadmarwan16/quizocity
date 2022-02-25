@@ -28,10 +28,10 @@ function MyApp({ Component, pageProps }: AppProps) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen text-text-primary">
           <Navbar />
 
-          <div className="flex items-center justify-center flex-grow p-0 bg-black md:mt-0 mt-14 md:p-10">
+          <div className="flex items-center justify-center flex-grow p-0 bg-background md:mt-0 mt-14 md:p-10">
             <Component {...pageProps} />
           </div>
         </div>

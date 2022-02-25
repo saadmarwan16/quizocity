@@ -14,7 +14,7 @@ const QuizSubmit: FunctionComponent = () => {
           <Typography className="text-sm md:text-base text-text-secondary">
             PERCENTAGE COMPLETE
           </Typography>
-          <Typography className="text-3xl sm:text-5xl md:text-8xl text-text-primary">
+          <Typography className="text-3xl sm:text-5xl md:text-8xl">
             30%
           </Typography>
         </div>
@@ -23,7 +23,7 @@ const QuizSubmit: FunctionComponent = () => {
             TIME REMAINING
           </Typography>
           <div className="flex items-end">
-            <Typography className="text-3xl sm:text-5xl md:text-8xl text-text-primary">
+            <Typography className="text-3xl sm:text-5xl md:text-8xl">
               30
             </Typography>
             <Typography className="pl-1 mb-1 text-sm md:text-lg text-text-disabled">
@@ -34,16 +34,11 @@ const QuizSubmit: FunctionComponent = () => {
       </div>
       <div className="flex flex-col gap-3 md:basis-2/3">
         <div className="flex gap-8 px-3 py-2 rounded-lg bg-background-paper">
-          <Typography className="md:basis-1/3 basis-1/2" color="text.secondary">
+          <Typography className="md:basis-1/3 basis-1/2">
             Question Number
           </Typography>
-          <Typography className="md:basis-1/3 basis-1/2" color="text.secondary">
-            Answered?
-          </Typography>
-          <Typography
-            className="hidden md:basis-1/3 sm:block"
-            color="text.secondary"
-          >
+          <Typography className="md:basis-1/3 basis-1/2">Answered?</Typography>
+          <Typography className="hidden md:basis-1/3 sm:block">
             Answer
           </Typography>
         </div>

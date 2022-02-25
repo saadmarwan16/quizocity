@@ -85,7 +85,7 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
                 color="secondary"
                 endIcon={<LoginIcon />}
               >
-                Sign in
+                Log in
               </Button>
             </a>
           </Link>

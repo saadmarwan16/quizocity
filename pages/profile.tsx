@@ -1,11 +1,7 @@
-import { FunctionComponent } from "react";
-
-interface PerformanceProps {
-    
+import { NextPage } from "next";
+ 
+const Profile: NextPage = () => {
+    return ( <div>Profile Page</div> );
 }
  
-const Performance: FunctionComponent<PerformanceProps> = () => {
-    return ( <div className="text-text-primary">Profile Page</div> );
-}
- 
-export default Performance;
+export default Profile;

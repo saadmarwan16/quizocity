@@ -7,7 +7,7 @@ interface QuizCompleteProps {}
 const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
     const { setQuizLocation } = useContext(QuizLocationContext)!;
 
-  return (<div className="text-text-primary">
+  return (<div>
       <p>Quiz Complete</p>
       <Button variant="contained" color="secondary" onClick={() => setQuizLocation("submit")}>Go back</Button>
   </div>);

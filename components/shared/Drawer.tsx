@@ -51,7 +51,7 @@ export default function Drawer() {
           <div>
             <div className="flex flex-col items-center gap-3 pt-8 pb-2">
               <Avatar alt="logo" src="/logo.png" className="w-32 h-32" />
-              <Typography variant="h4" color="text.primary">
+              <Typography variant="h4">
                 Quizocity
               </Typography>
             </div>

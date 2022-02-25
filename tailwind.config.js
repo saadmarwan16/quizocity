@@ -15,8 +15,8 @@ module.exports = {
                     disabled: "#ffffff80",
                 },
                 background: {
-                    DEFAULT: "#929EAF",
-                    paper: "#04050D",
+                    DEFAULT: "#070707",
+                    paper: "#101010",
                 }
             },
         },

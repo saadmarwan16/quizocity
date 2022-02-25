@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { QUESTIONS_POINTER } from "../../constants/quiz";
 
 export const getQuestionsPointerLocal = () => {
@@ -21,9 +21,10 @@ export const useQuestionPointerLocal = (): [
   (data: number) => void
 ] => {
   const [questionsPointer, setQuestionsPointer] = useState<number | null>(null);
-
-  return [
-    questionsPointer,
+  const momoizedSetQuestionsPointer = useCallback(
     (data: number) => setQuestionsPointerLocal(data, setQuestionsPointer),
-  ];
+    []
+  );
+
+  return [questionsPointer, momoizedSetQuestionsPointer];
 };

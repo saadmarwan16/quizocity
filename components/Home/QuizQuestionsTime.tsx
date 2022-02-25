@@ -10,7 +10,7 @@ const QuizQuestionsTime: FunctionComponent = () => {
       <div className="flex items-center gap-2">
         <Typography className="pr-2 text-text-disabled">Questions</Typography>
         <div className="flex items-center gap-1">
-          <Typography variant="h4" component="p" color="text.primary">
+          <Typography variant="h4" component="p">
             {questionsPointer + 1}
           </Typography>
           <Typography variant="h5" component="p" color="text.secondary">/</Typography>
@@ -24,7 +24,7 @@ const QuizQuestionsTime: FunctionComponent = () => {
         <div className="relative inline-flex">
           <CircularProgress variant="determinate" value={30} />
           <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center">
-            <Typography className="text-text-primary">30</Typography>
+            <Typography>30</Typography>
           </div>
         </div>
       </div>

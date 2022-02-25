@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { ANSWERS } from "../../constants/quiz";
 import { IAnswers } from "../../data_types/types";
 
@@ -22,6 +22,10 @@ export const useAnswersLocal = (): [
   (data: IAnswers) => void
 ] => {
   const [answers, setAnswers] = useState<IAnswers | null>(null);
+  const memoizedSetAnswers = useCallback(
+    (data: IAnswers) => setAnswersLocal(data, setAnswers),
+    []
+  );
 
-  return [answers, (data: IAnswers) => setAnswersLocal(data, setAnswers)];
+  return [answers, memoizedSetAnswers];
 };

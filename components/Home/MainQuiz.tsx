@@ -35,7 +35,7 @@ const MainQuiz: FunctionComponent = () => {
         <Typography className="text-text-disabled">
           Which of two words is more related to the given words below:
         </Typography>
-        <Typography className="font-bold text-text-primary">
+        <Typography className="font-bold">
           {`${quiz[0]}, ${quiz[1]}, ${quiz[2]}`}
         </Typography>
       </div>
@@ -57,7 +57,6 @@ const MainQuiz: FunctionComponent = () => {
               value={option[0]}
               control={
                 <Radio
-                  className="text-text-primary"
                   sx={{
                     "> span": {
                       color: option[0] !== answer ? "#ffffff" : null,
@@ -66,7 +65,7 @@ const MainQuiz: FunctionComponent = () => {
                 />
               }
               label={capitalize(option[0])}
-              className="w-full text-text-primary"
+              className="w-full"
             />
           </div>
           <div
@@ -79,7 +78,6 @@ const MainQuiz: FunctionComponent = () => {
               value={option[1]}
               control={
                 <Radio
-                  className="text-text-primary"
                   sx={{
                     "> span": {
                       color: option[1] !== answer ? "#ffffff" : null,
@@ -88,7 +86,7 @@ const MainQuiz: FunctionComponent = () => {
                 />
               }
               label={capitalize(option[1])}
-              className="w-full text-text-primary"
+              className="w-full"
             />
           </div>
         </RadioGroup>

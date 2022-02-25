@@ -1,10 +1,10 @@
-import { useLocalStorageValue } from "@mantine/hooks";
+// import { useLocalStorageValue } from "@mantine/hooks";
 import { Button, CircularProgress } from "@mui/material";
 import { NextPage } from "next";
 import { useState } from "react";
-import useFetch from "react-fetch-hook";
-import { QUESTIONS } from "../lib/constants/quiz";
-import { IQuestions } from "../interfaces";
+// import useFetch from "react-fetch-hook";
+// import { QUESTIONS } from "../lib/constants/quiz";
+// import { IQuestions } from "../interfaces";
 import router from "next/router";
 import { MAIN_QUIZ } from "../lib/constants/routes";
 
