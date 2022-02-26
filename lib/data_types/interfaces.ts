@@ -11,3 +11,15 @@ export interface IQuestions {
   level: number;
   quizlist: IQuestion[];
 }
+
+export interface ILoginInput {
+  email: string;
+  password: string;
+}
+
+export interface ISignupInput {
+  name: string;
+  email: string;
+  password: string;
+  confirm: string;
+}

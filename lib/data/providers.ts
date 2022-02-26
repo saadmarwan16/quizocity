@@ -1,3 +1,4 @@
+import { User } from "firebase/auth";
 import { createContext } from "react";
 import {
   AnswersContextValue,
@@ -16,3 +17,5 @@ export const QuestionsPointerContext =
   createContext<QuestionsPointerContextValue | null>(null);
 
 export const QuizLocationContext = createContext<QuizLocationContextValue | null>(null);
+
+export const AuthContext = createContext<User | null>(null);

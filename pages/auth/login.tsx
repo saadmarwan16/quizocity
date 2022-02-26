@@ -5,18 +5,19 @@ import { NextPage } from "next";
 import Link from "next/link";
 import { FORGOT_PASSWORD, SIGNUP } from "../../lib/constants/routes";
 import { SubmitHandler, useForm } from "react-hook-form";
-
-interface ILoginInput {
-  email: string;
-  password: string;
-}
+import { StyledTextField } from "../../lib/styled/StyledTextField";
+import {yupResolver} from '@hookform/resolvers/yup';
+import { ILoginInput } from "../../lib/data_types/interfaces";
+import { loginInputSchema } from "../../lib/data_types/schemas";
 
 const Login: NextPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ILoginInput>();
+  } = useForm<ILoginInput>({
+    resolver: yupResolver(loginInputSchema),
+  });
 
   const formSubmitHandler: SubmitHandler<ILoginInput> = (data: ILoginInput) => {
     console.log(data);
@@ -55,36 +56,25 @@ const Login: NextPage = () => {
         <Divider className="w-10 bg-text-disabled" style={{ height: "1px" }} />
       </div>
       <form onSubmit={handleSubmit(formSubmitHandler)}>
-        <TextField
+        <StyledTextField
           label="Enter your email"
           error={!!errors.email}
           type="text"
           fullWidth
           variant="outlined"
           helperText={errors.email ? errors.email.message : null}
-          {...register("email", {required: true})}
-          className="mb-3 rounded-lg auth-border-disabled text-text-disabled border-text-disabled"
-          sx={{
-            " label": {
-              color: "#ffffff80",
-            },
-            " fieldset": {
-              borderColor: "#ffffff80",
-            },
-          }}
+          {...register("email")}
+          className="mb-3"
         />
-        <TextField
+        <StyledTextField
           label="Enter your password"
           error={!!errors.password}
           type="password"
           fullWidth
+          variant="outlined"
+          helperText={errors.password ? errors.password.message : null}
           {...register("password")}
-          className="mb-3 rounded-lg auth-border-disabled bg-background-paper text-text-disabled"
-          sx={{
-            " label": {
-              color: "#ffffff80",
-            },
-          }}
+          className="mb-3"
         />
         <div className="flex justify-end mt-1 mb-4">
           <Link href={FORGOT_PASSWORD}>

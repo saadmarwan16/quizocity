@@ -4,8 +4,21 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import GoogleIcon from "@mui/icons-material/Google";
 import Link from "next/link";
 import { LOGIN } from "../../lib/constants/routes";
+import { StyledTextField } from "../../lib/styled/StyledTextField";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { ISignupInput } from "../../lib/data_types/interfaces";
+import { signupInputSchema } from "../../lib/data_types/schemas";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const Signup: NextPage = () => {
+  const {register, handleSubmit, formState: {errors}} = useForm<ISignupInput>({
+    resolver: yupResolver(signupInputSchema),
+  });
+
+  const formSubmitHandler: SubmitHandler<ISignupInput> = (data: ISignupInput) => {
+    console.log(data);
+  };
+
   return (
     <div className="max-w-lg p-6">
       <div className="mb-8">
@@ -37,56 +50,50 @@ const Signup: NextPage = () => {
         <Typography>OR</Typography>
         <Divider className="w-10 bg-text-disabled" style={{ height: "1px" }} />
       </div>
-      <form>
-        <TextField
+      <form onSubmit={handleSubmit(formSubmitHandler)}>
+        <StyledTextField
           label="Enter your name"
-          error={false}
+          error={!!errors.name}
           type="text"
           fullWidth
-          className="mb-3 rounded-lg auth-border-disabled bg-background-paper text-text-disabled"
-          sx={{
-            " label": {
-              color: "#ffffff80",
-            },
-          }}
+          helperText={errors.name ? errors.name.message : null}
+          {...register('name')}
+          className="mb-3"
         />
-        <TextField
+        <StyledTextField
           label="Enter your email"
-          error={false}
+          error={!!errors.email}
           type="email"
           fullWidth
-          className="mb-3 rounded-lg auth-border-disabled bg-background-paper text-text-disabled"
-          sx={{
-            " label": {
-              color: "#ffffff80",
-            },
-          }}
+          helperText={errors.email ? errors.email.message : null}
+          {...register('email')}
+          className="mb-3"
         />
-        <TextField
+        <StyledTextField
           label="Pick a strong password"
-          error={false}
+          error={!!errors.password}
           type="password"
           fullWidth
-          className="mb-3 rounded-lg auth-border-disabled bg-background-paper text-text-disabled"
-          sx={{
-            " label": {
-              color: "#ffffff80",
-            },
-          }}
+          helperText={errors.password ? errors.password.message : null}
+          {...register('password')}
+          className="mb-3"
         />
-        <TextField
+        <StyledTextField
           label="Enter password again"
-          error={false}
+          error={!!errors.confirm}
           type="password"
           fullWidth
-          className="mb-3 rounded-lg auth-border-disabled bg-background-paper text-text-disabled"
-          sx={{
-            " label": {
-              color: "#ffffff80",
-            },
-          }}
+          helperText={errors.confirm ? errors.confirm.message : null}
+          {...register('confirm')}
+          className="mb-3"
         />
-        <Button variant="contained" color="secondary" type="submit" fullWidth className="mt-6">
+        <Button
+          variant="contained"
+          color="secondary"
+          type="submit"
+          fullWidth
+          className="mt-6"
+        >
           Register
         </Button>
       </form>

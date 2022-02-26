@@ -4,6 +4,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { purple, teal } from "@mui/material/colors";
 import Head from "next/head";
 import Navbar from "../components/shared/Navbar";
+import { AuthContext } from "../lib/data/providers";
+import useUserData from "../lib/data/hooks/useUserData";
 
 const theme = createTheme({
   palette: {
@@ -19,6 +21,8 @@ const theme = createTheme({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const { user, loading, error } = useUserData();
+
   return (
     <ThemeProvider theme={theme}>
       <>
@@ -28,13 +32,33 @@ function MyApp({ Component, pageProps }: AppProps) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <div className="flex flex-col min-h-screen text-text-primary">
-          <Navbar />
-
-          <div className="flex items-center justify-center flex-grow p-0 bg-background md:mt-0 mt-14 md:p-10">
-            <Component {...pageProps} />
+        {/* {loading && (
+          <div className="flex flex-col min-h-screen text-background">
+            Loading
           </div>
-        </div>
+        )}
+
+        {error && (
+          <div className="flex flex-col min-h-screen text-background">
+            Error: {error.message}
+          </div>
+        )} */}
+
+        {user ? (
+          <AuthContext.Provider value={user}>
+            <div className="flex flex-col min-h-screen text-text-primary">
+              <Navbar />
+
+              <div className="flex items-center justify-center flex-grow p-0 bg-background md:mt-0 mt-14 md:p-10">
+                <Component {...pageProps} />
+              </div>
+            </div>
+          </AuthContext.Provider>
+        ) : (
+          <div className="flex flex-col min-h-screen text-background">
+            Error: {user}
+          </div>
+        )}
       </>
     </ThemeProvider>
   );
