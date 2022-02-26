@@ -4,8 +4,25 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { NextPage } from "next";
 import Link from "next/link";
 import { FORGOT_PASSWORD, SIGNUP } from "../../lib/constants/routes";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+interface ILoginInput {
+  email: string;
+  password: string;
+}
 
 const Login: NextPage = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ILoginInput>();
+
+  const formSubmitHandler: SubmitHandler<ILoginInput> = (data: ILoginInput) => {
+    console.log(data);
+    console.log(errors);
+  };
+
   return (
     <div className="max-w-lg p-6">
       <div className="mb-8">
@@ -37,26 +54,31 @@ const Login: NextPage = () => {
         <Typography>OR</Typography>
         <Divider className="w-10 bg-text-disabled" style={{ height: "1px" }} />
       </div>
-      <form>
+      <form onSubmit={handleSubmit(formSubmitHandler)}>
         <TextField
-          id="outlined-password-input"
           label="Enter your email"
-          error={false}
-          type="email"
+          error={!!errors.email}
+          type="text"
           fullWidth
-          className="mb-3 rounded-lg auth-border-disabled bg-background-paper text-text-disabled"
+          variant="outlined"
+          helperText={errors.email ? errors.email.message : null}
+          {...register("email", {required: true})}
+          className="mb-3 rounded-lg auth-border-disabled text-text-disabled border-text-disabled"
           sx={{
             " label": {
               color: "#ffffff80",
             },
+            " fieldset": {
+              borderColor: "#ffffff80",
+            },
           }}
         />
         <TextField
-          id="outlined-password-input"
           label="Enter your password"
-          error={false}
+          error={!!errors.password}
           type="password"
           fullWidth
+          {...register("password")}
           className="mb-3 rounded-lg auth-border-disabled bg-background-paper text-text-disabled"
           sx={{
             " label": {
@@ -66,19 +88,19 @@ const Login: NextPage = () => {
         />
         <div className="flex justify-end mt-1 mb-4">
           <Link href={FORGOT_PASSWORD}>
-            <a>
+            <a className="hover:scale-105">
               <Typography color="primary">Forgot password?</Typography>
             </a>
           </Link>
         </div>
-        <Button variant="contained" color="secondary" fullWidth>
+        <Button variant="contained" color="secondary" fullWidth type="submit">
           Login
         </Button>
       </form>
-      <div className="flex flex-wrap justify-center gap-1 mt-4">
+      <div className="flex flex-wrap justify-center gap-2 mt-4">
         <Typography>Not a member yet?</Typography>
         <Link href={SIGNUP}>
-          <a className="text-teal-700 underline">
+          <a className="text-teal-700 underline hover:scale-105">
             <Typography color="primary">Register Now</Typography>
           </a>
         </Link>
