@@ -20,11 +20,11 @@ import {
   getQuestionsPointerLocal,
   useQuestionPointerLocal,
 } from "../lib/data/local_data_sources/questionsPointerLocal";
-import QuizBody from "../components/home/QuizBody";
+import QuizBody from "../components/quiz/QuizBody";
 import { IAnswers } from "../lib/data_types/types";
-import QuizSubmit from "../components/home/QuizSubmit";
+import QuizSubmit from "../components/quiz/QuizSubmit";
 import { useQuizLocationLocal } from "../lib/data/local_data_sources/quizLocationLocal";
-import QuizComplete from "../components/home/QuizComplete";
+import QuizComplete from "../components/quiz/QuizComplete";
 
 const Quiz: NextPage = () => {
   const [questions, setQuestions] = useQuestionsLocal();
