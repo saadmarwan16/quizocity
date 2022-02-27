@@ -1,101 +1,89 @@
 import { NextPage } from "next";
-import { Button, Divider, TextField, Typography } from "@mui/material";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GoogleIcon from "@mui/icons-material/Google";
+import { Typography } from "@mui/material";
+
 import Link from "next/link";
 import { LOGIN } from "../../lib/constants/routes";
-import { StyledTextField } from "../../lib/styled/StyledTextField";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ISignupInput } from "../../lib/data_types/interfaces";
 import { signupInputSchema } from "../../lib/data_types/schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
+import AuthHeading from "../../components/auth/AuthHeading";
+import AuthGoogleFacebookButtons from "../../components/auth/AuthGoogleFacebookButtons";
+import AuthOptionsDivider from "../../components/auth/AuthOptionsDivider";
+import AuthInputField, {
+  AuthInputFieldProps,
+} from "../../components/auth/AuthInputField";
+import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
 
 const Signup: NextPage = () => {
-  const {register, handleSubmit, formState: {errors}} = useForm<ISignupInput>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ISignupInput>({
     resolver: yupResolver(signupInputSchema),
   });
 
-  const formSubmitHandler: SubmitHandler<ISignupInput> = (data: ISignupInput) => {
+  const formSubmitHandler: SubmitHandler<ISignupInput> = (
+    data: ISignupInput
+  ) => {
     console.log(data);
   };
 
+  const inputFieldsList: AuthInputFieldProps[] = [
+    {
+      label: "Enter your name",
+      error: !!errors.name,
+      type: "text",
+      helperText: errors.name ? errors.name.message : null,
+      fieldName: () => register("name"),
+    },
+    {
+      label: "Enter your email",
+      error: !!errors.email,
+      type: "email",
+      helperText: errors.email ? errors.email.message : null,
+      fieldName: () => register("email"),
+    },
+    {
+      label: "Pick a strong password",
+      error: !!errors.password,
+      type: "password",
+      helperText: errors.password ? errors.password.message : null,
+      fieldName: () => register("password"),
+    },
+    {
+      label: "Enter password again",
+      error: !!errors.confirm,
+      type: "password",
+      helperText: errors.confirm ? errors.confirm.message : null,
+      fieldName: () => register("confirm"),
+    },
+  ];
+
   return (
     <div className="max-w-lg p-6">
-      <div className="mb-8">
-        <Typography className="mb-0" variant="h4">
-          Register
-        </Typography>
-        <Typography color="text.disabled">
-          Register with one of the following options
-        </Typography>
-      </div>
-      <div className="flex flex-wrap justify-center gap-4 mb-2">
-        <Button
-          variant="contained"
-          className="font-semibold text-black bg-text-primary hover:bg-text-primary hover:scale-105"
-          startIcon={<FacebookIcon className="text-blue-800 " />}
-        >
-          Facebook
-        </Button>
-        <Button
-          variant="contained"
-          className="font-semibold text-black bg-text-primary hover:bg-text-primary hover:scale-105"
-          startIcon={<GoogleIcon className="text-red-700" />}
-        >
-          Google
-        </Button>
-      </div>
-      <div className="flex items-center justify-center gap-2 pt-4 mb-4">
-        <Divider className="w-10 bg-text-disabled" style={{ height: "1px" }} />
-        <Typography>OR</Typography>
-        <Divider className="w-10 bg-text-disabled" style={{ height: "1px" }} />
-      </div>
+      <AuthHeading
+        title="Register"
+        subtitle="Register with one of the following options"
+      />
+      <AuthGoogleFacebookButtons
+        onGoogleClicked={() => console.log("signup, google")}
+        onFacebookClicked={() => console.log("signup, facebook")}
+      />
+      <AuthOptionsDivider />
       <form onSubmit={handleSubmit(formSubmitHandler)}>
-        <StyledTextField
-          label="Enter your name"
-          error={!!errors.name}
-          type="text"
-          fullWidth
-          helperText={errors.name ? errors.name.message : null}
-          {...register('name')}
-          className="mb-3"
-        />
-        <StyledTextField
-          label="Enter your email"
-          error={!!errors.email}
-          type="email"
-          fullWidth
-          helperText={errors.email ? errors.email.message : null}
-          {...register('email')}
-          className="mb-3"
-        />
-        <StyledTextField
-          label="Pick a strong password"
-          error={!!errors.password}
-          type="password"
-          fullWidth
-          helperText={errors.password ? errors.password.message : null}
-          {...register('password')}
-          className="mb-3"
-        />
-        <StyledTextField
-          label="Enter password again"
-          error={!!errors.confirm}
-          type="password"
-          fullWidth
-          helperText={errors.confirm ? errors.confirm.message : null}
-          {...register('confirm')}
-          className="mb-3"
-        />
-        <Button
-          variant="contained"
-          color="secondary"
-          type="submit"
-          fullWidth
-          className="mt-6"
-        >
-          Register
-        </Button>
+        {inputFieldsList.map((inputField, index) => (
+          <AuthInputField
+            key={index}
+            label={inputField.label}
+            error={inputField.error}
+            type={inputField.type}
+            helperText={inputField.helperText}
+            fieldName={() => inputField.fieldName()}
+          />
+        ))}
+        <AuthSubmitButton title="Register" />
       </form>
       <div className="flex flex-wrap justify-center gap-2 mt-4">
         <Typography>Already a member?</Typography>

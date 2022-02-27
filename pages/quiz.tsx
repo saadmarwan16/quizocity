@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { IQuestions } from "../lib/data_types/interfaces";
 import {
   QuestionsContext,
@@ -20,11 +20,11 @@ import {
   getQuestionsPointerLocal,
   useQuestionPointerLocal,
 } from "../lib/data/local_data_sources/questionsPointerLocal";
-import QuizBody from "../components/Home/QuizBody";
+import QuizBody from "../components/home/QuizBody";
 import { IAnswers } from "../lib/data_types/types";
-import QuizSubmit from "../components/Home/QuizSubmit";
+import QuizSubmit from "../components/home/QuizSubmit";
 import { useQuizLocationLocal } from "../lib/data/local_data_sources/quizLocationLocal";
-import QuizComplete from "../components/Home/QuizComplete";
+import QuizComplete from "../components/home/QuizComplete";
 
 const Quiz: NextPage = () => {
   const [questions, setQuestions] = useQuestionsLocal();

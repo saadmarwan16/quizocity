@@ -1,12 +1,11 @@
 import { FunctionComponent, useContext } from "react";
-import MainQuiz from "../../components/Home/MainQuiz";
-import QuizControlsButton from "../../components/Home/QuizControlsButton";
-import QuizUserCompleted from "../../components/Home/QuizUserCompleted";
-import QuizQuestionsTime from "../../components/Home/QuizQuestionsTime";
+import MainQuiz from "./MainQuiz";
+import QuizControlsButton from "./QuizControlsButton";
+import QuizUserCompleted from "./QuizUserCompleted";
+import QuizQuestionsTime from "./QuizQuestionsTime";
 import Divider from "@mui/material/Divider";
-import QuizNextQuestionButton from "../../components/Home/QuizNextQuestionButton";
+import QuizNextQuestionButton from "./QuizNextQuestionButton";
 import { Button } from "@mui/material";
-import Link from "next/link";
 import { AnswersContext, QuestionsPointerContext, QuizLocationContext } from "../../lib/data/providers";
 
 const QuizBody: FunctionComponent = () => {

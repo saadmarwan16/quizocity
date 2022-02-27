@@ -23,3 +23,12 @@ export interface ISignupInput {
   password: string;
   confirm: string;
 }
+
+export interface IForgotPasswordInput {
+  email: string;
+}
+
+export interface IResetPasswordInput {
+  password: string;
+  confirm: string;
+}
