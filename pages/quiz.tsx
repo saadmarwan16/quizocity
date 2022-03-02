@@ -1,11 +1,12 @@
 import { NextPage } from "next";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IQuestions } from "../lib/data_types/interfaces";
 import {
   QuestionsContext,
   AnswersContext,
   QuestionsPointerContext,
   QuizLocationContext,
+  TimerContext,
 } from "../lib/data/providers";
 import { initialAnswers } from "../lib/data";
 import {
@@ -25,12 +26,14 @@ import { IAnswers } from "../lib/data_types/types";
 import QuizSubmit from "../components/quiz/QuizSubmit";
 import { useQuizLocationLocal } from "../lib/data/local_data_sources/quizLocationLocal";
 import QuizComplete from "../components/quiz/QuizComplete";
+import Layout from "../components/shared/Layout";
 
 const Quiz: NextPage = () => {
   const [questions, setQuestions] = useQuestionsLocal();
   const [answers, setAnswers] = useAnswersLocal();
   const [questionsPointer, setQuestionsPointer] = useQuestionPointerLocal();
   const [quizLocation, setQuizLocation] = useQuizLocationLocal();
+  const [timer, setTimer] = useState<number>(100000);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
   const apiHost = process.env.NEXT_PUBLIC_API_HOST as string;
@@ -61,8 +64,17 @@ const Quiz: NextPage = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       const results = (await fetcher()) as IQuestions;
-      getQuiz(results, initialAnswers, 0);
+      getQuiz(results, initialAnswers, 1);
     };
+
+    const timerId = setTimeout(() => {
+      setTimer((timer) => (timer -= 1));
+    }, 1000);
+
+    if (timer <= 0) {
+      clearTimeout(timerId);
+      setQuizLocation("complete");
+    }
 
     if (
       !getQuestionsLocal() ||
@@ -78,10 +90,11 @@ const Quiz: NextPage = () => {
         getQuestionsPointerLocal()!
       );
     }
-  }, [fetcher, getQuiz]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetcher, getQuiz, timer]);
 
   return (
-    <>
+    <Layout pageName="Quiz">
       {questions === null || answers === null || questionsPointer === null ? (
         <div>Loading...</div>
       ) : (
@@ -93,19 +106,21 @@ const Quiz: NextPage = () => {
               <QuizLocationContext.Provider
                 value={{ quizLocation, setQuizLocation }}
               >
-                {(quizLocation === "main" || quizLocation === null) && (
+                <TimerContext.Provider value={timer}>
+                  {(quizLocation === "main" || quizLocation === null) && (
                     <div className="flex flex-col justify-center w-full min-h-screen p-8 mx-auto md:w-4/5 bg-background md:bg-background-paper rounded-xl md:min-h-fit">
                       <QuizBody />
                     </div>
                   )}
-                {quizLocation === "submit" && <QuizSubmit />}
-                {quizLocation === "complete" && <QuizComplete />}
+                  {quizLocation === "submit" && <QuizSubmit />}
+                  {quizLocation === "complete" && <QuizComplete />}
+                </TimerContext.Provider>
               </QuizLocationContext.Provider>
             </QuestionsPointerContext.Provider>
           </AnswersContext.Provider>
         </QuestionsContext.Provider>
       )}
-    </>
+    </Layout>
   );
 };
 

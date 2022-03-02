@@ -7,6 +7,7 @@ import AuthInputField, {
   AuthInputFieldProps,
 } from "../../components/auth/AuthInputField";
 import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
+import Layout from "../../components/shared/Layout";
 import { IResetPasswordInput } from "../../lib/data_types/interfaces";
 import { resetPasswordInputSchema } from "../../lib/data_types/schemas";
 
@@ -43,22 +44,26 @@ const ResetPassword: NextPage = () => {
   ];
 
   return (
-    <div className="max-w-lg p-6">
-      <AuthHeading title="Reset your password" />
-      <form onSubmit={handleSubmit(formSubmitHandler)}>
-        {inputFieldsList.map((inputField, index) => (
-          <AuthInputField
-            key={index}
-            label={inputField.label}
-            error={inputField.error}
-            type={inputField.type}
-            helperText={inputField.helperText}
-            fieldName={() => inputField.fieldName()}
-          />
-        ))}
-        <AuthSubmitButton title="Register" />
-      </form>
-    </div>
+    <Layout pageName="Reset password">
+      <div className="flex items-center justify-center w-full">
+        <div className="max-w-lg p-6">
+          <AuthHeading title="Reset your password" />
+          <form onSubmit={handleSubmit(formSubmitHandler)}>
+            {inputFieldsList.map((inputField, index) => (
+              <AuthInputField
+                key={index}
+                label={inputField.label}
+                error={inputField.error}
+                type={inputField.type}
+                helperText={inputField.helperText}
+                fieldName={() => inputField.fieldName()}
+              />
+            ))}
+            <AuthSubmitButton title="Reset" />
+          </form>
+        </div>
+      </div>
+    </Layout>
   );
 };
 

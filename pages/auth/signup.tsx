@@ -14,6 +14,7 @@ import AuthInputField, {
   AuthInputFieldProps,
 } from "../../components/auth/AuthInputField";
 import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
+import Layout from "../../components/shared/Layout";
 
 const Signup: NextPage = () => {
   const {
@@ -62,38 +63,42 @@ const Signup: NextPage = () => {
   ];
 
   return (
-    <div className="max-w-lg p-6">
-      <AuthHeading
-        title="Register"
-        subtitle="Register with one of the following options"
-      />
-      <AuthGoogleFacebookButtons
-        onGoogleClicked={() => console.log("signup, google")}
-        onFacebookClicked={() => console.log("signup, facebook")}
-      />
-      <AuthOptionsDivider />
-      <form onSubmit={handleSubmit(formSubmitHandler)}>
-        {inputFieldsList.map((inputField, index) => (
-          <AuthInputField
-            key={index}
-            label={inputField.label}
-            error={inputField.error}
-            type={inputField.type}
-            helperText={inputField.helperText}
-            fieldName={() => inputField.fieldName()}
+    <Layout pageName="Register">
+      <div className="flex items-center justify-center w-full">
+        <div className="max-w-lg p-6">
+          <AuthHeading
+            title="Register"
+            subtitle="Register with one of the following options"
           />
-        ))}
-        <AuthSubmitButton title="Register" />
-      </form>
-      <div className="flex flex-wrap justify-center gap-2 mt-4">
-        <Typography>Already a member?</Typography>
-        <Link href={LOGIN}>
-          <a className="text-teal-700 underline hover:scale-105">
-            <Typography color="primary">Login Now</Typography>
-          </a>
-        </Link>
+          <AuthGoogleFacebookButtons
+            onGoogleClicked={() => console.log("signup, google")}
+            onFacebookClicked={() => console.log("signup, facebook")}
+          />
+          <AuthOptionsDivider />
+          <form onSubmit={handleSubmit(formSubmitHandler)}>
+            {inputFieldsList.map((inputField, index) => (
+              <AuthInputField
+                key={index}
+                label={inputField.label}
+                error={inputField.error}
+                type={inputField.type}
+                helperText={inputField.helperText}
+                fieldName={() => inputField.fieldName()}
+              />
+            ))}
+            <AuthSubmitButton title="Register" />
+          </form>
+          <div className="flex flex-wrap justify-center gap-2 mt-4">
+            <Typography>Already a member?</Typography>
+            <Link href={LOGIN}>
+              <a className="text-teal-700 underline hover:scale-105">
+                <Typography color="primary">Login Now</Typography>
+              </a>
+            </Link>
+          </div>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

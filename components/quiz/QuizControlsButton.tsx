@@ -1,4 +1,4 @@
-import Button from "@mui/material/Button";
+import { Typography } from "@mui/material";
 import { FunctionComponent, useContext } from "react";
 import { QuestionsPointerContext } from "../../lib/data/providers";
 
@@ -14,18 +14,12 @@ const QuizControlsButton: FunctionComponent<QuizControlsButtonProps> = ({
   const { setQuestionsPointer } = useContext(QuestionsPointerContext)!;
 
   return (
-    <Button
-      variant="contained"
-      disableElevation
-      style={{
-        minWidth: 20,
-        minHeight: 20,
-        padding: 0,
-        backgroundColor: isAnswered ? "#00796B" : "#ffffff80",
-        // backgroundColor: "#ffffff80",
-      }}
-      onClick={() => setQuestionsPointer(clickedNum)}
-    />
+    <div 
+    onClick={() => setQuestionsPointer(clickedNum)}
+    className={`${isAnswered ? 'bg-teal-700' : 'border-disabled'} px-4 py-2 rounded-3xl cursor-pointer`}
+    >
+      <Typography>{clickedNum}</Typography>
+    </div>
   );
 };
 

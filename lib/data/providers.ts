@@ -19,3 +19,5 @@ export const QuestionsPointerContext =
 export const QuizLocationContext = createContext<QuizLocationContextValue | null>(null);
 
 export const AuthContext = createContext<User | null>(null);
+
+export const TimerContext = createContext<number>(99);

@@ -1,11 +1,18 @@
 import { FunctionComponent, useContext } from "react";
 import { Button, CircularProgress, Typography } from "@mui/material";
-import { AnswersContext, QuizLocationContext } from "../../lib/data/providers";
+import {
+  AnswersContext,
+  QuizLocationContext,
+  TimerContext,
+} from "../../lib/data/providers";
 import capitalize from "../../lib/utils/capitalize";
 
 const QuizSubmit: FunctionComponent = () => {
   const { answers } = useContext(AnswersContext)!;
   const { setQuizLocation } = useContext(QuizLocationContext)!;
+  const timer = useContext(TimerContext);
+  const percentageCompleted =
+    answers.filter((answer) => answer !== null).length * 10;
 
   return (
     <div className="flex flex-col w-full p-4 sm:p-8 md:flex-row md:gap-6">
@@ -15,7 +22,7 @@ const QuizSubmit: FunctionComponent = () => {
             PERCENTAGE COMPLETE
           </Typography>
           <Typography className="text-3xl sm:text-5xl md:text-8xl">
-            30%
+            {percentageCompleted}%
           </Typography>
         </div>
         <div>
@@ -24,7 +31,7 @@ const QuizSubmit: FunctionComponent = () => {
           </Typography>
           <div className="flex items-end">
             <Typography className="text-3xl sm:text-5xl md:text-8xl">
-              30
+              {timer}
             </Typography>
             <Typography className="pl-1 mb-1 text-sm md:text-lg text-text-disabled">
               seconds

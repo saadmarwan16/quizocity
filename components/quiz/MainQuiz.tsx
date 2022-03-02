@@ -3,7 +3,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from "@mui/material/Typography";
-import { ChangeEvent, useState, FunctionComponent, useContext } from "react";
+import { ChangeEvent, FunctionComponent, useContext } from "react";
 import {
   AnswersContext,
   QuestionsContext,
@@ -19,12 +19,12 @@ const MainQuiz: FunctionComponent = () => {
     questions: { quizlist },
   } = useContext(QuestionsContext)!;
   const { questionsPointer } = useContext(QuestionsPointerContext)!;
-  const { option, quiz } = quizlist[questionsPointer];
-  const answer = answers[questionsPointer];
+  const { option, quiz } = quizlist[questionsPointer - 1];
+  const answer = answers[questionsPointer - 1];
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const res: IAnswers = answers.map((value, index) =>
-      index === questionsPointer ? event.target.value : value
+      index === questionsPointer - 1 ? event.target.value : value
     ) as IAnswers;
     setAnswers(res);
   };

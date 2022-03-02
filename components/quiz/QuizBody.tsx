@@ -23,12 +23,12 @@ const QuizBody: FunctionComponent = () => {
       <QuizQuestionsTime />
       <MainQuiz />
       <div className="flex flex-wrap justify-center gap-2 py-6">
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-          <QuizControlsButton clickedNum={num} key={num} isAnswered={!!answers[num]} />
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+          <QuizControlsButton clickedNum={num} key={num} isAnswered={!!answers[num - 1]} />
         ))}
       </div>
 
-      {questionsPointer < 9 ? (
+      {questionsPointer < 10 ? (
         <QuizNextQuestionButton />
       ) : (
         <div className="flex justify-end">

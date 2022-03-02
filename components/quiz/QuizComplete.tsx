@@ -1,16 +1,41 @@
 import { Avatar, Button, Typography } from "@mui/material";
-import { FunctionComponent, useContext } from "react";
-import { QuizLocationContext } from "../../lib/data/providers";
+import { FunctionComponent, useContext, useEffect, useState } from "react";
 import StarIcon from "@mui/icons-material/Star";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import router from "next/router";
 import { HOME, LEADERBOARD } from "../../lib/constants/routes";
+import {
+  AnswersContext,
+  QuestionsContext,
+  QuizLocationContext,
+} from "../../lib/data/providers";
 
 interface QuizCompleteProps {}
 
 const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
   const { setQuizLocation } = useContext(QuizLocationContext)!;
+  const { questions } = useContext(QuestionsContext)!;
+  const { answers } = useContext(AnswersContext)!;
+  const [score, setScore] = useState<number | null>(null);
+  const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
+
+  useEffect(() => {
+    let currentScore = 0;
+    let currentCorrectAnswers = [];
+
+    for (let i = 0; i < 10; i++) {
+      const correctAnswerIndex = questions.quizlist[i].correct;
+      const correctAnswer =
+        questions.quizlist[i].option[correctAnswerIndex - 1];
+
+      currentCorrectAnswers.push(correctAnswer);
+      if (correctAnswer === answers[i]) currentScore += 1;
+    }
+
+    setScore(currentScore);
+    setCorrectAnswers(currentCorrectAnswers);
+  }, [answers, questions.quizlist]);
 
   return (
     <div className="flex flex-col items-center w-full p-3 md:-6">
@@ -45,7 +70,7 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
           <Typography className="text-text-disabled">YOUR SCORE</Typography>
           <div className="flex gap-3">
             <Typography color="primary" variant="h4">
-              9
+              {score}
             </Typography>
             <Typography color="text.primary" variant="h4">
               / 10
@@ -69,8 +94,8 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
           variant="outlined"
           color="secondary"
           onClick={() => {
+            localStorage.clear();
             router.push(HOME);
-            setQuizLocation("main");
           }}
         >
           Go to Home
@@ -79,13 +104,22 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
           variant="contained"
           color="secondary"
           onClick={() => {
+            localStorage.clear();
             router.push(LEADERBOARD);
-            setQuizLocation("main");
           }}
         >
           See Leaderboard
         </Button>
       </div>
+      {/* <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => {
+          setQuizLocation("main");
+        }}
+      >
+        Go back
+      </Button> */}
       <div className="flex flex-col w-full gap-3 sm:w-5/6 md:w-3/4">
         <Typography className="font-bold" variant="h6">
           Results Details
@@ -113,16 +147,18 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
               className="truncate basis-2/5 text-ellipsis"
               color="text.secondary"
             >
-              Pen
+              {!!answers[index] ? answers[index] : "Null"}
             </Typography>
             <Typography
               className="truncate basis-2/5 text-ellipsis"
               color="text.secondary"
             >
-              Pen
+              {correctAnswers[index]}
+              {/* {correctAnswer} */}
             </Typography>
             <div className="basis-1/5">
-              {index % 2 == 0 ? (
+              {correctAnswers[index] === answers[index] ? (
+                // {correctAnswer === answers[index] ? (
                 <CheckIcon className="text-green-400" />
               ) : (
                 <ClearIcon className="text-red-600" />

@@ -1,7 +1,12 @@
 import { NextPage } from "next";
- 
+import Layout from "../components/shared/Layout";
+
 const Performance: NextPage = () => {
-    return ( <div>Performance Page</div> );
-}
- 
+  return (
+    <Layout pageName="Performance">
+      <div>Performance Page</div>
+    </Layout>
+  );
+};
+
 export default Performance;

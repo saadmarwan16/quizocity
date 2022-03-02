@@ -33,18 +33,9 @@ a {
     border: 1px solid #ffffff80;
 }
 
-/* .auth-border-disabled {
-    border: 1px solid #ffffff80;
+.border-explore:hover {
+    border: 1px solid #ffffffb3;
 }
-
-.auth-border-disabled:hover {
-    border: 0px solid #ffffff80;
-}
-
-.auth-border-disabled:focus  {
-    border: 0px solid #ffffff80;
-    outline: none;
-} */
 
 .border-right {
     border-right-width: 0px;
