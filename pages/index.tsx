@@ -1,11 +1,17 @@
 import { Button, IconButton, Typography } from "@mui/material";
 import { NextPage } from "next";
-import { MAIN_QUIZ } from "../lib/constants/routes";
+import { LOGIN, MAIN_QUIZ } from "../lib/constants/routes";
 import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import Layout from "../components/shared/Layout";
+import { useAuthContext } from "../lib/data/contexts/AuthContext";
+import router from "next/router";
 
 const Home: NextPage = () => {
+  const {authState: [user]} = useAuthContext();
+
+  if (typeof window !== 'undefined' && !user) router.push(LOGIN);
+
   return (
     <Layout pageName="Home">
       <div className="w-full">

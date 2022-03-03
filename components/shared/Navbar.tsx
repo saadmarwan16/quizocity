@@ -19,23 +19,26 @@ import {
 } from "../../lib/constants/routes";
 import NavItem from "./NavItem";
 import LoginIcon from "@mui/icons-material/Login";
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useRouter } from "next/router";
 import Drawer from "./Drawer";
+import { useAuthContext } from "../../lib/data/contexts/AuthContext";
 
 interface NavbarProps {}
 
 const Navbar: FunctionComponent<NavbarProps> = () => {
   const router = useRouter();
+  const {
+    authState: [user],
+    signOut,
+  } = useAuthContext();
 
   return (
     <div>
       <Box className="flex md:hidden bg-background-paper">
-        <AppBar
-          position="fixed"
-          className="flex md:hidden bg-background-paper"
-        >
+        <AppBar position="fixed" className="flex md:hidden bg-background-paper">
           <Toolbar>
-          <Drawer />
+            <Drawer />
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Quiz
             </Typography>
@@ -78,22 +81,35 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
           />
         </div>
         <div className="flex gap-4">
-          <Link href={LOGIN}>
-            <a>
-              <Button
-                variant="outlined"
-                color="secondary"
-                endIcon={<LoginIcon />}
-              >
-                Log in
-              </Button>
-            </a>
-          </Link>
-          <Link href={PROFILE}>
-            <a>
-              <Avatar alt="profile" src="/person.png" />
-            </a>
-          </Link>
+          {user ? (
+            <Button
+              variant="outlined"
+              color="secondary"
+              endIcon={<LogoutIcon />}
+              onClick={signOut}
+            >
+              Log out
+            </Button>
+          ) : (
+            <Link href={LOGIN}>
+              <a>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  endIcon={<LoginIcon />}
+                >
+                  Log in
+                </Button>
+              </a>
+            </Link>
+          )}
+          {user && (
+            <Link href={PROFILE}>
+              <a>
+                <Avatar alt="profile" src="/person.png" />
+              </a>
+            </Link>
+          )}
         </div>
       </div>
     </div>

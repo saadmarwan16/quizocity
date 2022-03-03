@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import { Typography } from "@mui/material";
 
 import Link from "next/link";
-import { LOGIN } from "../../lib/constants/routes";
+import { HOME, LOGIN } from "../../lib/constants/routes";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ISignupInput } from "../../lib/data_types/interfaces";
 import { signupInputSchema } from "../../lib/data_types/schemas";
@@ -15,8 +15,11 @@ import AuthInputField, {
 } from "../../components/auth/AuthInputField";
 import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
 import Layout from "../../components/shared/Layout";
+import { useAuthContext } from "../../lib/data/contexts/AuthContext";
+import router from "next/router";
 
 const Signup: NextPage = () => {
+  const {authState: [user, loading], createUserWithEmailAndPassword} = useAuthContext();
   const {
     register,
     handleSubmit,
@@ -24,11 +27,10 @@ const Signup: NextPage = () => {
   } = useForm<ISignupInput>({
     resolver: yupResolver(signupInputSchema),
   });
-
   const formSubmitHandler: SubmitHandler<ISignupInput> = (
     data: ISignupInput
   ) => {
-    console.log(data);
+    createUserWithEmailAndPassword(data.email, data.password);
   };
 
   const inputFieldsList: AuthInputFieldProps[] = [
@@ -62,6 +64,8 @@ const Signup: NextPage = () => {
     },
   ];
 
+  if (typeof window !== 'undefined' && user) router.push(HOME);
+
   return (
     <Layout pageName="Register">
       <div className="flex items-center justify-center w-full">
@@ -86,7 +90,7 @@ const Signup: NextPage = () => {
                 fieldName={() => inputField.fieldName()}
               />
             ))}
-            <AuthSubmitButton title="Register" />
+            <AuthSubmitButton title="Register" isLoading={loading} />
           </form>
           <div className="flex flex-wrap justify-center gap-2 mt-4">
             <Typography>Already a member?</Typography>

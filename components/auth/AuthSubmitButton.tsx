@@ -1,12 +1,14 @@
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { FunctionComponent } from "react";
 
 interface AuthSubmitButtonProps {
   title: string;
+  isLoading: boolean;
 }
 
 const AuthSubmitButton: FunctionComponent<AuthSubmitButtonProps> = ({
   title,
+  isLoading
 }) => {
   return (
     <Button
@@ -15,8 +17,9 @@ const AuthSubmitButton: FunctionComponent<AuthSubmitButtonProps> = ({
       type="submit"
       fullWidth
       className="mt-6"
+      disabled={isLoading}
     >
-      {title}
+      {isLoading ? <CircularProgress /> : title}
     </Button>
   );
 };

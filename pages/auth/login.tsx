@@ -1,7 +1,7 @@
 import { Button, Typography } from "@mui/material";
 import { NextPage } from "next";
 import Link from "next/link";
-import { FORGOT_PASSWORD, SIGNUP } from "../../lib/constants/routes";
+import { FORGOT_PASSWORD, HOME, SIGNUP } from "../../lib/constants/routes";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ILoginInput } from "../../lib/data_types/interfaces";
@@ -14,8 +14,11 @@ import AuthInputField, {
 } from "../../components/auth/AuthInputField";
 import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
 import Layout from "../../components/shared/Layout";
+import { useAuthContext } from "../../lib/data/contexts/AuthContext";
+import router from "next/router";
 
 const Login: NextPage = () => {
+  const {authState: [user, loading], signInWithEmailAndPassword} = useAuthContext();
   const {
     register,
     handleSubmit,
@@ -23,9 +26,9 @@ const Login: NextPage = () => {
   } = useForm<ILoginInput>({
     resolver: yupResolver(loginInputSchema),
   });
-
   const formSubmitHandler: SubmitHandler<ILoginInput> = (data: ILoginInput) => {
     console.log(data);
+    signInWithEmailAndPassword(data.email, data.password);
   };
 
   const inputFieldsList: AuthInputFieldProps[] = [
@@ -44,6 +47,8 @@ const Login: NextPage = () => {
       fieldName: () => register("password"),
     },
   ];
+
+  if (typeof window !== 'undefined' && user) router.push(HOME)
 
   return (
     <Layout pageName="Login">
@@ -76,7 +81,7 @@ const Login: NextPage = () => {
                 </a>
               </Link>
             </div>
-            <AuthSubmitButton title="Login" />
+            <AuthSubmitButton title="Login" isLoading={loading} />
           </form>
           <div className="flex flex-wrap justify-center gap-2 mt-4">
             <Typography>Not a member yet?</Typography>

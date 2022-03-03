@@ -2,6 +2,7 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { purple, teal } from "@mui/material/colors";
+import AuthContextProvider from "../lib/data/contexts/AuthContext";
 
 const theme = createTheme({
   palette: {
@@ -19,7 +20,9 @@ const theme = createTheme({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <Component {...pageProps} />
+      <AuthContextProvider>
+        <Component {...pageProps} />
+      </AuthContextProvider>
     </ThemeProvider>
   );
 }
