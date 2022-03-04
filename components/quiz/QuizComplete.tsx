@@ -1,5 +1,5 @@
 import { Avatar, Button, Typography } from "@mui/material";
-import { FunctionComponent, useContext, useEffect, useState } from "react";
+import { FunctionComponent, useContext, useEffect, useRef, useState } from "react";
 import StarIcon from "@mui/icons-material/Star";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -10,19 +10,24 @@ import {
   QuestionsContext,
   QuizLocationContext,
 } from "../../lib/data/providers";
+import { useAuthContext } from "../../lib/data/contexts/AuthContext";
 
 interface QuizCompleteProps {}
 
 const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
-  const { setQuizLocation } = useContext(QuizLocationContext)!;
+  const {
+    authState: [user],
+  } = useAuthContext();
   const { questions } = useContext(QuestionsContext)!;
   const { answers } = useContext(AnswersContext)!;
   const [score, setScore] = useState<number | null>(null);
+  const isMounted = useRef(false);
   const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
 
   useEffect(() => {
     let currentScore = 0;
     let currentCorrectAnswers = [];
+    isMounted.current = true;
 
     for (let i = 0; i < 10; i++) {
       const correctAnswerIndex = questions.quizlist[i].correct;
@@ -35,6 +40,10 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
 
     setScore(currentScore);
     setCorrectAnswers(currentCorrectAnswers);
+
+    return (() => {
+      isMounted.current = false;
+    })
   }, [answers, questions.quizlist]);
 
   return (
@@ -42,11 +51,11 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
       <div className="mb-10">
         <Avatar
           alt="profile"
-          src="/person.png"
+          src={user?.photoURL ?? "/person.png"}
           className="mb-4 w-36 h-36 sm:w-44 sm:h-44"
         />
         <Typography className="mb-2 font-bold" variant="h6">
-          Anonymous User
+          {user?.displayName?.toUpperCase() ?? "Anonymous User"}
         </Typography>
         <div className="flex items-center justify-center gap-2">
           <div className="inline-flex items-center justify-center bg-teal-700 w-9 h-9 rounded-3xl">
@@ -93,9 +102,9 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
         <Button
           variant="outlined"
           color="secondary"
-          onClick={() => {
-            localStorage.clear();
-            router.push(HOME);
+          onClick={async () => {
+            await router.push(HOME);
+            isMounted && localStorage.clear();
           }}
         >
           Go to Home
@@ -103,9 +112,9 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
         <Button
           variant="contained"
           color="secondary"
-          onClick={() => {
-            localStorage.clear();
-            router.push(LEADERBOARD);
+          onClick={async () => {
+            await router.push(LEADERBOARD);
+            isMounted && localStorage.clear();
           }}
         >
           See Leaderboard

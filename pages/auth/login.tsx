@@ -1,4 +1,4 @@
-import { Button, Typography } from "@mui/material";
+import { Alert, Button, Snackbar, Typography } from "@mui/material";
 import { NextPage } from "next";
 import Link from "next/link";
 import { FORGOT_PASSWORD, HOME, SIGNUP } from "../../lib/constants/routes";
@@ -16,9 +16,15 @@ import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
 import Layout from "../../components/shared/Layout";
 import { useAuthContext } from "../../lib/data/contexts/AuthContext";
 import router from "next/router";
+import { useState } from "react";
 
 const Login: NextPage = () => {
-  const {authState: [user, loading], signInWithEmailAndPassword} = useAuthContext();
+  const [openError, setOpenError] = useState<boolean>(false);
+  const {
+    authState: [user],
+    loginWithEmailAndPassword: [login, _, loading, error],
+    loginWithGoogle: [googleLogin, __, googleLoading, googleError],
+  } = useAuthContext();
   const {
     register,
     handleSubmit,
@@ -26,9 +32,11 @@ const Login: NextPage = () => {
   } = useForm<ILoginInput>({
     resolver: yupResolver(loginInputSchema),
   });
-  const formSubmitHandler: SubmitHandler<ILoginInput> = (data: ILoginInput) => {
-    console.log(data);
-    signInWithEmailAndPassword(data.email, data.password);
+  const formSubmitHandler: SubmitHandler<ILoginInput> = async (
+    data: ILoginInput
+  ) => {
+    await login(data.email, data.password);
+    if (error) setOpenError(true);
   };
 
   const inputFieldsList: AuthInputFieldProps[] = [
@@ -48,52 +56,68 @@ const Login: NextPage = () => {
     },
   ];
 
-  if (typeof window !== 'undefined' && user) router.push(HOME)
+  if (typeof window !== "undefined" && user) router.push(HOME);
 
   return (
-    <Layout pageName="Login">
-      <div className="flex items-center justify-center w-full">
-        <div className="max-w-lg p-6">
-          <AuthHeading
-            title="Login"
-            subtitle="Login with one of the following options"
-          />
-          <AuthGoogleFacebookButtons
-            onGoogleClicked={() => console.log("login, google")}
-            onFacebookClicked={() => console.log("login, facebook")}
-          />
-          <AuthOptionsDivider />
-          <form onSubmit={handleSubmit(formSubmitHandler)}>
-            {inputFieldsList.map((inputField, index) => (
-              <AuthInputField
-                key={index}
-                label={inputField.label}
-                error={inputField.error}
-                type={inputField.type}
-                helperText={inputField.helperText}
-                fieldName={inputField.fieldName}
-              />
-            ))}
-            <div className="flex justify-end mt-1 mb-4">
-              <Link href={FORGOT_PASSWORD}>
-                <a className="hover:scale-105">
-                  <Typography color="primary">Forgot password?</Typography>
+    <>
+      <Snackbar
+        open={openError}
+        autoHideDuration={4000}
+        onClose={() => setOpenError(false)}
+      >
+        <Alert
+          onClose={() => setOpenError(false)}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {error?.message}
+        </Alert>
+      </Snackbar>
+      <Layout pageName="Login">
+        <div className="flex items-center justify-center w-full">
+          <div className="max-w-lg p-6">
+            <AuthHeading
+              title="Login"
+              subtitle="Login with one of the following options"
+            />
+            <AuthGoogleFacebookButtons
+              onGoogleClicked={() => googleLogin()}
+              onFacebookClicked={() => console.log("login, facebook")}
+            />
+            <AuthOptionsDivider />
+            <form onSubmit={handleSubmit(formSubmitHandler)}>
+              {inputFieldsList.map((inputField, index) => (
+                <AuthInputField
+                  key={index}
+                  label={inputField.label}
+                  error={inputField.error}
+                  type={inputField.type}
+                  helperText={inputField.helperText}
+                  fieldName={inputField.fieldName}
+                />
+              ))}
+              <div className="flex justify-end mt-1 mb-4">
+                <Link href={FORGOT_PASSWORD}>
+                  <a className="hover:scale-105">
+                    <Typography color="primary">Forgot password?</Typography>
+                  </a>
+                </Link>
+              </div>
+              <AuthSubmitButton title="Login" isLoading={loading} />
+            </form>
+            <div className="flex flex-wrap justify-center gap-2 mt-4">
+              <Typography>Not a member yet?</Typography>
+              <Link href={SIGNUP}>
+                <a className="text-teal-700 underline hover:scale-105">
+                  <Typography color="primary">Register Now</Typography>
                 </a>
               </Link>
             </div>
-            <AuthSubmitButton title="Login" isLoading={loading} />
-          </form>
-          <div className="flex flex-wrap justify-center gap-2 mt-4">
-            <Typography>Not a member yet?</Typography>
-            <Link href={SIGNUP}>
-              <a className="text-teal-700 underline hover:scale-105">
-                <Typography color="primary">Register Now</Typography>
-              </a>
-            </Link>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 

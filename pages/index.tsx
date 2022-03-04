@@ -6,11 +6,15 @@ import AddIcon from "@mui/icons-material/Add";
 import Layout from "../components/shared/Layout";
 import { useAuthContext } from "../lib/data/contexts/AuthContext";
 import router from "next/router";
+import { useEffect } from "react";
 
 const Home: NextPage = () => {
   const {authState: [user]} = useAuthContext();
 
-  if (typeof window !== 'undefined' && !user) router.push(LOGIN);
+  useEffect(() => {
+    if (!user) router.push(LOGIN);
+  }, [user]);
+  
 
   return (
     <Layout pageName="Home">

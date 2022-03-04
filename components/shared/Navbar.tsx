@@ -106,7 +106,7 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
           {user && (
             <Link href={PROFILE}>
               <a>
-                <Avatar alt="profile" src="/person.png" />
+                <Avatar alt="profile" src={user.photoURL ?? "/person.png"} />
               </a>
             </Link>
           )}

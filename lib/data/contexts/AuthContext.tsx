@@ -2,22 +2,34 @@ import { signOut } from "firebase/auth";
 import { createContext, FC, useContext } from "react";
 import {
   AuthStateHook,
+  EmailAndPasswordActionHook,
+  SendPasswordResetEmailHook,
+  SignInWithPopupHook,
   useAuthState,
   useCreateUserWithEmailAndPassword,
+  useSendPasswordResetEmail,
   useSignInWithEmailAndPassword,
+  useSignInWithFacebook,
+  useSignInWithGoogle,
 } from "react-firebase-hooks/auth";
 import { auth } from "../../utils/firebaseInit";
+import useConfirmPasswordReset from "../hooks/useConfirmPasswordReset";
+
+type ConfirmPasswordResetHook = () => Promise<{
+  resetPassword: (oob: string, password: string) => Promise<void>;
+  isComplete: boolean;
+  loading: boolean;
+  error: string | null;
+}>;
 
 interface IAuthContext {
   authState: AuthStateHook;
-  createUserWithEmailAndPassword: (
-    email: string,
-    password: string
-  ) => Promise<void>;
-  signInWithEmailAndPassword: (
-    email: string,
-    password: string
-  ) => Promise<void>;
+  registerWithEmailAndPassword: EmailAndPasswordActionHook;
+  loginWithEmailAndPassword: EmailAndPasswordActionHook;
+  loginWithGoogle: SignInWithPopupHook;
+  loginWithFacebook: SignInWithPopupHook;
+  sendPasswordResetEmail: SendPasswordResetEmailHook;
+  confirmPasswordReset: ConfirmPasswordResetHook;
   signOut: () => Promise<void>;
 }
 
@@ -26,16 +38,14 @@ const AuthContext = createContext<IAuthContext | null>(null);
 export const useAuthContext = () => useContext(AuthContext)!;
 
 const AuthContextProvider: FC = ({ children }) => {
-  const [createUserWithEmailAndPassword] =
-    useCreateUserWithEmailAndPassword(auth);
-  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
-
   const value = {
     authState: useAuthState(auth),
-    // registerWithEmailAndPassword: useCreateUserWithEmailAndPassword(auth),
-    // loginWithEmailAndPassword: useSignInWithEmailAndPassword(auth),
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
+    registerWithEmailAndPassword: useCreateUserWithEmailAndPassword(auth),
+    loginWithEmailAndPassword: useSignInWithEmailAndPassword(auth),
+    loginWithGoogle: useSignInWithGoogle(auth),
+    loginWithFacebook: useSignInWithFacebook(auth),
+    sendPasswordResetEmail: useSendPasswordResetEmail(auth),
+    confirmPasswordReset: useConfirmPasswordReset,
     signOut: () => signOut(auth),
   };
 

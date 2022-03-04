@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button } from "@mui/material";
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import AuthHeading from "../../components/auth/AuthHeading";
 import AuthInputField, {
@@ -12,6 +12,8 @@ import { IResetPasswordInput } from "../../lib/data_types/interfaces";
 import { resetPasswordInputSchema } from "../../lib/data_types/schemas";
 
 const ResetPassword: NextPage = () => {
+  const location = useRouter()
+  console.log(location.query);
   const {
     register,
     handleSubmit,
