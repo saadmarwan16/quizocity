@@ -15,12 +15,12 @@ import {
 import { auth } from "../../utils/firebaseInit";
 import useConfirmPasswordReset from "../hooks/useConfirmPasswordReset";
 
-type ConfirmPasswordResetHook = () => Promise<{
+type ConfirmPasswordResetHook = {
   resetPassword: (oob: string, password: string) => Promise<void>;
   isComplete: boolean;
   loading: boolean;
   error: string | null;
-}>;
+};
 
 interface IAuthContext {
   authState: AuthStateHook;
@@ -45,7 +45,7 @@ const AuthContextProvider: FC = ({ children }) => {
     loginWithGoogle: useSignInWithGoogle(auth),
     loginWithFacebook: useSignInWithFacebook(auth),
     sendPasswordResetEmail: useSendPasswordResetEmail(auth),
-    confirmPasswordReset: useConfirmPasswordReset,
+    confirmPasswordReset: useConfirmPasswordReset(auth),
     signOut: () => signOut(auth),
   };
 

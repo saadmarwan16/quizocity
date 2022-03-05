@@ -16,10 +16,10 @@ const AuthSubmitButton: FunctionComponent<AuthSubmitButtonProps> = ({
       color="secondary"
       type="submit"
       fullWidth
-      className="mt-6"
+      className={`mt-6 ${isLoading && "border-disabled"}`}
       disabled={isLoading}
     >
-      {isLoading ? <CircularProgress /> : title}
+      {isLoading ? <CircularProgress size={24} /> : title}
     </Button>
   );
 };

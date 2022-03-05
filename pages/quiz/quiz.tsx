@@ -1,32 +1,32 @@
 import { NextPage } from "next";
 import { useCallback, useEffect, useState } from "react";
-import { IQuestions } from "../lib/data_types/interfaces";
+import { IQuestions } from "../../lib/data_types/interfaces";
 import {
   QuestionsContext,
   AnswersContext,
   QuestionsPointerContext,
   QuizLocationContext,
   TimerContext,
-} from "../lib/data/providers";
-import { initialAnswers } from "../lib/data";
+} from "../../lib/data/providers";
+import { initialAnswers } from "../../lib/data";
 import {
   getQuestionsLocal,
   useQuestionsLocal,
-} from "../lib/data/local_data_sources/questionsLocal";
+} from "../../lib/data/local_data_sources/questionsLocal";
 import {
   getAnswersLocal,
   useAnswersLocal,
-} from "../lib/data/local_data_sources/answersLocal";
+} from "../../lib/data/local_data_sources/answersLocal";
 import {
   getQuestionsPointerLocal,
   useQuestionPointerLocal,
-} from "../lib/data/local_data_sources/questionsPointerLocal";
-import QuizBody from "../components/quiz/QuizBody";
-import { IAnswers } from "../lib/data_types/types";
-import QuizSubmit from "../components/quiz/QuizSubmit";
-import { useQuizLocationLocal } from "../lib/data/local_data_sources/quizLocationLocal";
-import QuizComplete from "../components/quiz/QuizComplete";
-import Layout from "../components/shared/Layout";
+} from "../../lib/data/local_data_sources/questionsPointerLocal";
+import QuizBody from "../../components/quiz/QuizBody";
+import { IAnswers } from "../../lib/data_types/types";
+import QuizSubmit from "../../components/quiz/QuizSubmit";
+import { useQuizLocationLocal } from "../../lib/data/local_data_sources/quizLocationLocal";
+import QuizComplete from "../../components/quiz/QuizComplete";
+import Layout from "../../components/shared/Layout";
 
 const Quiz: NextPage = () => {
   const [questions, setQuestions] = useQuestionsLocal();

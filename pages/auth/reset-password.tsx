@@ -1,6 +1,8 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Alert, Snackbar } from "@mui/material";
 import { NextPage } from "next";
-import { useRouter } from "next/router";
+import router from "next/router";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import AuthHeading from "../../components/auth/AuthHeading";
 import AuthInputField, {
@@ -8,12 +10,16 @@ import AuthInputField, {
 } from "../../components/auth/AuthInputField";
 import AuthSubmitButton from "../../components/auth/AuthSubmitButton";
 import Layout from "../../components/shared/Layout";
+import { LOGIN } from "../../lib/constants/routes";
+import { useAuthContext } from "../../lib/data/contexts/AuthContext";
 import { IResetPasswordInput } from "../../lib/data_types/interfaces";
 import { resetPasswordInputSchema } from "../../lib/data_types/schemas";
 
 const ResetPassword: NextPage = () => {
-  const location = useRouter()
-  console.log(location.query);
+  const [openError, setOpenError] = useState<boolean>(false);
+  const {
+    confirmPasswordReset: { resetPassword, isComplete, loading, error },
+  } = useAuthContext();
   const {
     register,
     handleSubmit,
@@ -22,10 +28,15 @@ const ResetPassword: NextPage = () => {
     resolver: yupResolver(resetPasswordInputSchema),
   });
 
-  const formSubmitHandler: SubmitHandler<IResetPasswordInput> = (
+  const formSubmitHandler: SubmitHandler<IResetPasswordInput> = async (
     data: IResetPasswordInput
   ) => {
     console.log(data);
+    const query = router.query;
+    console.log(query.oobCode);
+    if (typeof query.oobCode === "string")
+      await resetPassword(query.oobCode, data.password);
+    if (isComplete) router.push(LOGIN);
   };
 
   const inputFieldsList: AuthInputFieldProps[] = [
@@ -46,6 +57,22 @@ const ResetPassword: NextPage = () => {
   ];
 
   return (
+    <>
+    <Snackbar
+        open={openError}
+        autoHideDuration={4000}
+        onClose={() => setOpenError(false)}
+      >
+        <Alert
+          onClose={() => setOpenError(false)}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {error}
+          {/* {error?.message} */}
+        </Alert>
+      </Snackbar>
     <Layout pageName="Reset password">
       <div className="flex items-center justify-center w-full">
         <div className="max-w-lg p-6">
@@ -61,11 +88,11 @@ const ResetPassword: NextPage = () => {
                 fieldName={() => inputField.fieldName()}
               />
             ))}
-            <AuthSubmitButton title="Reset" />
+            <AuthSubmitButton title="Reset" isLoading={loading} />
           </form>
         </div>
       </div>
-    </Layout>
+    </Layout></>
   );
 };
 

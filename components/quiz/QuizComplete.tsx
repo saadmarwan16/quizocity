@@ -163,11 +163,9 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
               color="text.secondary"
             >
               {correctAnswers[index]}
-              {/* {correctAnswer} */}
             </Typography>
             <div className="basis-1/5">
               {correctAnswers[index] === answers[index] ? (
-                // {correctAnswer === answers[index] ? (
                 <CheckIcon className="text-green-400" />
               ) : (
                 <ClearIcon className="text-red-600" />
