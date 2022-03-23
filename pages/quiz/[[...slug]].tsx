@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useCallback, useEffect, useState } from "react";
 import { IQuestions } from "../../lib/data_types/interfaces";
 import {
@@ -8,7 +8,7 @@ import {
   QuizLocationContext,
   TimerContext,
 } from "../../lib/data/providers";
-import { initialAnswers } from "../../lib/data";
+import { initialAnswers, quizArea, quizLevel } from "../../lib/data";
 import {
   getQuestionsLocal,
   useQuestionsLocal,
@@ -22,13 +22,20 @@ import {
   useQuestionPointerLocal,
 } from "../../lib/data/local_data_sources/questionsPointerLocal";
 import QuizBody from "../../components/quiz/QuizBody";
-import { IAnswers } from "../../lib/data_types/types";
+import { TAnswers } from "../../lib/data_types/types";
 import QuizSubmit from "../../components/quiz/QuizSubmit";
 import { useQuizLocationLocal } from "../../lib/data/local_data_sources/quizLocationLocal";
 import QuizComplete from "../../components/quiz/QuizComplete";
 import Layout from "../../components/shared/Layout";
+import { auth } from "../../lib/utils/firebaseInit";
 
-const Quiz: NextPage = () => {
+interface PageProps {
+    questionsProps: IQuestions | null,
+    answersProps: TAnswers | null,
+    questionsPointerProps: number | null,
+}
+
+const Quiz: NextPage<PageProps> = ({questionsProps, answersProps, questionsPointerProps}) => {
   const [questions, setQuestions] = useQuestionsLocal();
   const [answers, setAnswers] = useAnswersLocal();
   const [questionsPointer, setQuestionsPointer] = useQuestionPointerLocal();
@@ -53,7 +60,7 @@ const Quiz: NextPage = () => {
   }, [apiHost, apiKey, apiUrl]);
 
   const getQuiz = useCallback(
-    (questions: IQuestions, answers: IAnswers, questionsPointer: number) => {
+    (questions: IQuestions, answers: TAnswers, questionsPointer: number) => {
       setQuestions(questions);
       setAnswers(answers);
       setQuestionsPointer(questionsPointer);
@@ -90,7 +97,7 @@ const Quiz: NextPage = () => {
         getQuestionsPointerLocal()!
       );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetcher, getQuiz, timer]);
 
   return (
@@ -122,6 +129,51 @@ const Quiz: NextPage = () => {
       )}
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const params = query.slug as string[] | undefined;
+  if (!params) {
+    return {
+      props: { value: null },
+    };
+  }
+
+//   const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
+//   const apiHost = process.env.NEXT_PUBLIC_API_HOST as string;
+//   const apiKey = process.env.NEXT_PUBLIC_API_KEY as string;
+
+//   if (params.length === 1 && params[0] === "random") {
+//     const level = quizLevel[Math.round(Math.random() * 10)];
+//     const area = quizArea[Math.round(Math.random() * 12)];
+
+//     try {
+//       const response = await fetch(`${apiUrl}/?level=${level}&area=${area}`, {
+//         method: "GET",
+//         headers: {
+//           "x-rapidapi-host": apiHost,
+//           "x-rapidapi-key": apiKey,
+//         },
+//       });
+//       const results = (await response.json()) as IQuestions;
+
+//       return {
+//         props: {
+//           value: results,
+//         },
+//       };
+//     } catch (e) {
+//       return {
+//         props: {
+//           value: "error",
+//         },
+//       };
+//     }
+//   }
+
+  return {
+    props: { value: "string" },
+  };
 };
 
 export default Quiz;

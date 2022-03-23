@@ -1,3 +1,5 @@
+import { TAnswers } from "./types";
+
 export interface IQuestion {
   correct: number;
   option: [string, string];
@@ -10,6 +12,12 @@ export interface IQuestions {
   email: string;
   level: number;
   quizlist: IQuestion[];
+}
+
+export interface IQuiz {
+  questions: IQuestions,
+  answers: TAnswers,
+  questionsPointer: number,
 }
 
 export interface ILoginInput {

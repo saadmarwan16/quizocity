@@ -1,14 +1,11 @@
 import {
-  Box,
   Button,
   FormControl,
-  IconButton,
   InputLabel,
   MenuItem,
   Modal,
   Select,
   SelectChangeEvent,
-  TextField,
   Typography,
 } from "@mui/material";
 import { NextPage } from "next";
@@ -17,8 +14,8 @@ import Link from "next/link";
 import AddIcon from "@mui/icons-material/Add";
 import Layout from "../components/shared/Layout";
 import { useAuthContext } from "../lib/data/contexts/AuthContext";
-import router from "next/router";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 const style = {
   position: "absolute" as "absolute",
@@ -36,6 +33,8 @@ const Home: NextPage = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [examType, setExamType] = useState("");
   const [level, setLevel] = useState("");
+
+  const router = useRouter();
 
   const handleExamTypeChange = (event: SelectChangeEvent) => {
     console.log(event.target.value);
@@ -107,11 +106,7 @@ const Home: NextPage = () => {
             >
               {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map(
                 (level) => (
-                  <MenuItem
-                    key={level}
-                    value={level}
-                    className="text-black"
-                  >
+                  <MenuItem key={level} value={level} className="text-black">
                     {level}
                   </MenuItem>
                 )
@@ -126,8 +121,9 @@ const Home: NextPage = () => {
             <Typography variant="h4" className="mb-4 text-3xl md:text-4xl">
               Explore
             </Typography>
-            <div className="grid grid-cols-12 gap-6">
-              <div className="flex flex-col items-center col-span-6 gap-6 p-8 cursor-pointer md:col-span-4 bg-background-paper rounded-xl border-explore">
+            {/* <div className="grid grid-cols-12 gap-6"> */}
+            <div className="flex flex-wrap justify-center gap-6">
+              <div className="flex flex-col items-center justify-center gap-6 p-8 cursor-pointer w-52 h-52 md:w-80 md:h-80 bg-background-paper rounded-xl border-explore">
                 <div className="flex items-center justify-center w-12 h-12 bg-teal-700 rounded-3xl">
                   <AddIcon className="text-text-primary" />
                 </div>
@@ -139,7 +135,7 @@ const Home: NextPage = () => {
                 </Typography>
               </div>
               <div
-                className="flex flex-col items-center col-span-6 gap-6 p-8 cursor-pointer md:col-span-4 bg-background-paper rounded-xl border-explore"
+                className="flex flex-col items-center justify-center gap-6 p-8 cursor-pointer w-52 h-52 md:w-80 md:h-80 bg-background-paper rounded-xl border-explore"
                 onClick={() => setModalOpen(true)}
               >
                 <div className="flex items-center justify-center w-12 h-12 bg-teal-700 rounded-3xl">
@@ -152,7 +148,7 @@ const Home: NextPage = () => {
                   Create quiz
                 </Typography>
               </div>
-              <div className="flex flex-col items-center col-span-6 gap-6 p-8 cursor-pointer md:col-span-4 bg-background-paper rounded-xl border-explore">
+              <div className="flex flex-col items-center justify-center gap-6 p-8 cursor-pointer w-52 h-52 md:w-80 md:h-80 bg-background-paper rounded-xl border-explore">
                 <div className="flex items-center justify-center w-12 h-12 bg-teal-700 rounded-3xl">
                   <AddIcon className="text-text-primary" />
                 </div>

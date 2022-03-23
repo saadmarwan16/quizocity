@@ -1,5 +1,5 @@
 import { IQuestions } from "./data_types/interfaces";
-import { IAnswers } from "./data_types/types";
+import { TAnswers } from "./data_types/types";
 
 export const questions: IQuestions = {
   area: "sat",
@@ -60,7 +60,7 @@ export const questions: IQuestions = {
   ],
 };
 
-export const initialAnswers: IAnswers = [
+export const initialAnswers: TAnswers = [
   null,
   null,
   null,
@@ -71,4 +71,21 @@ export const initialAnswers: IAnswers = [
   null,
   null,
   null,
+];
+
+export const quizLevel = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+
+export const quizArea = [
+  "es",
+  "ms",
+  "hs",
+  "ksat",
+  "toeic",
+  "toefl",
+  "teps",
+  "sat",
+  "ielts",
+  "gre",
+  "gmat",
+  "overall",
 ];

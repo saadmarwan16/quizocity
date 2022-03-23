@@ -12,6 +12,7 @@ import { FunctionComponent } from "react";
 import {
   FAVORITES,
   HOME,
+  LEADERBOARD,
   LOGIN,
   MAIN_QUIZ,
   PERFORMANCE,
@@ -75,9 +76,9 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
             path={FAVORITES}
           />
           <NavItem
-            isActive={router.pathname === PERFORMANCE}
-            name="Performance"
-            path={PERFORMANCE}
+            isActive={router.pathname === LEADERBOARD}
+            name="Leaderboard"
+            path={LEADERBOARD}
           />
         </div>
         <div className="flex gap-4">

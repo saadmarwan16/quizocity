@@ -1,18 +1,18 @@
 import { IQuestions } from "./interfaces";
 
-export type IAnswer = string | null;
+export type TAnswer = string | null;
 
-export type IAnswers = [
-  IAnswer,
-  IAnswer,
-  IAnswer,
-  IAnswer,
-  IAnswer,
-  IAnswer,
-  IAnswer,
-  IAnswer,
-  IAnswer,
-  IAnswer
+export type TAnswers = [
+  TAnswer,
+  TAnswer,
+  TAnswer,
+  TAnswer,
+  TAnswer,
+  TAnswer,
+  TAnswer,
+  TAnswer,
+  TAnswer,
+  TAnswer
 ];
 
 export type QuestionsContextValue = {
@@ -21,8 +21,8 @@ export type QuestionsContextValue = {
 };
 
 export type AnswersContextValue = {
-  answers: IAnswers;
-  setAnswers: (data: IAnswers) => void;
+  answers: TAnswers;
+  setAnswers: (data: TAnswers) => void;
 };
 
 export type QuestionsPointerContextValue = {
