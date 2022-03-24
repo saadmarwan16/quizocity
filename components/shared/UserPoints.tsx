@@ -27,7 +27,7 @@ const UserPoints: FunctionComponent<UserPointsProps> = () => {
         <div className="flex items-center justify-center w-8 h-8 bg-teal-700 rounded-3xl">
           <StarIcon className="text-text-primary" />
         </div>
-        <Typography variant="h5">120</Typography>
+        <Typography variant="h5">0</Typography>
       </div>
     </div>
   );

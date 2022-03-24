@@ -29,7 +29,8 @@ const Login: NextPage = () => {
   const {
     authState: [user],
     loginWithEmailAndPassword: [login, _, loading, error],
-    loginWithGoogle: [googleLogin, __, googleLoading, googleError],
+    loginWithGoogle: [googleLogin],
+    loginWithFacebook: [facebookLogin],
   } = useAuthContext();
   const {
     register,
@@ -89,7 +90,7 @@ const Login: NextPage = () => {
             />
             <AuthGoogleFacebookButtons
               onGoogleClicked={() => googleLogin()}
-              onFacebookClicked={() => console.log("login, facebook")}
+              onFacebookClicked={() => facebookLogin()}
             />
             <AuthOptionsDivider />
             <form onSubmit={handleSubmit(formSubmitHandler)}>

@@ -15,9 +15,9 @@ export interface IQuestions {
 }
 
 export interface IQuiz {
-  questions: IQuestions,
-  answers: TAnswers,
-  questionsPointer: number,
+  questions: IQuestions;
+  answers: TAnswers;
+  questionsPointer: number;
 }
 
 export interface ILoginInput {
@@ -39,4 +39,11 @@ export interface IForgotPasswordInput {
 export interface IResetPasswordInput {
   password: string;
   confirm: string;
+}
+
+export interface ILeaderboard {
+  uid: string;
+  displayName: string;
+  photoURL?: string;
+  points: number;
 }

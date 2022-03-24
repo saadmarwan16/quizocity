@@ -4,7 +4,7 @@ import { Alert, Snackbar, Typography } from "@mui/material";
 import Link from "next/link";
 import { HOME, LOGIN } from "../../lib/constants/routes";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ISignupInput } from "../../lib/data_types/interfaces";
+import { ILeaderboard, ISignupInput } from "../../lib/data_types/interfaces";
 import { signupInputSchema } from "../../lib/data_types/schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthHeading from "../../components/auth/AuthHeading";
@@ -18,12 +18,16 @@ import Layout from "../../components/shared/Layout";
 import { useAuthContext } from "../../lib/data/contexts/AuthContext";
 import router from "next/router";
 import { useState } from "react";
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { firestore } from "../../lib/utils/firebaseInit";
 
 const Signup: NextPage = () => {
   const [openError, setOpenError] = useState<boolean>(false);
   const {
     authState: [user],
     registerWithEmailAndPassword: [createUser, _, loading, error],
+    loginWithGoogle: [googleLogin],
+    loginWithFacebook: [facebookLogin],
   } = useAuthContext();
   const {
     register,
@@ -70,7 +74,21 @@ const Signup: NextPage = () => {
     },
   ];
 
-  if (typeof window !== "undefined" && user) router.push(HOME);
+  if (typeof window !== "undefined" && user) {
+    router.push(HOME);
+    const leaderboardRef = doc(firestore, `leaderboard/${user.uid}`);
+    getDoc(leaderboardRef)
+      .then((leaderboard) => {
+        if (!leaderboard.exists()) {
+          setDoc(leaderboardRef, {
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            points: 0,
+          });
+        }
+      })
+      .catch((_) => {});
+  }
 
   return (
     <>
@@ -96,8 +114,8 @@ const Signup: NextPage = () => {
               subtitle="Register with one of the following options"
             />
             <AuthGoogleFacebookButtons
-              onGoogleClicked={() => console.log("signup, google")}
-              onFacebookClicked={() => console.log("signup, facebook")}
+              onGoogleClicked={() => googleLogin()}
+              onFacebookClicked={() => facebookLogin()}
             />
             <AuthOptionsDivider />
             <form onSubmit={handleSubmit(formSubmitHandler)}>

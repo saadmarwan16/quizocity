@@ -20,7 +20,7 @@ const AuthGoogleFacebookButtons: FunctionComponent<
         variant="contained"
         className="font-semibold text-black bg-text-primary hover:bg-text-primary hover:scale-105"
         startIcon={<FacebookIcon className="text-blue-800 " />}
-        onClick={() => facebookLogin()}
+        onClick={onFacebookClicked}
       >
         Facebook
       </Button>
@@ -28,7 +28,7 @@ const AuthGoogleFacebookButtons: FunctionComponent<
         variant="contained"
         className="font-semibold text-black bg-text-primary hover:bg-text-primary hover:scale-105"
         startIcon={<GoogleIcon className="text-red-700" />}
-        onClick={() => googleLogin()}
+        onClick={onGoogleClicked}
       >
         Google
       </Button>
