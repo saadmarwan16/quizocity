@@ -1,4 +1,4 @@
-import { Avatar, Button, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { FunctionComponent, useContext, useEffect, useRef, useState } from "react";
 import StarIcon from "@mui/icons-material/Star";
 import CheckIcon from "@mui/icons-material/Check";
@@ -8,9 +8,9 @@ import { HOME, LEADERBOARD } from "../../lib/constants/routes";
 import {
   AnswersContext,
   QuestionsContext,
-  QuizLocationContext,
 } from "../../lib/data/providers";
 import { useAuthContext } from "../../lib/data/contexts/AuthContext";
+import UserPoints from "../shared/UserPoints";
 
 interface QuizCompleteProps {}
 
@@ -49,22 +49,7 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
   return (
     <div className="flex flex-col items-center w-full p-3 md:-6">
       <div className="mb-10">
-        <Avatar
-          alt="profile"
-          src={user?.photoURL ?? "/person.png"}
-          className="mb-4 w-36 h-36 sm:w-44 sm:h-44"
-        />
-        <Typography className="mb-2 font-bold" variant="h6">
-          {user?.displayName?.toUpperCase() ?? "Anonymous User"}
-        </Typography>
-        <div className="flex items-center justify-center gap-2">
-          <div className="inline-flex items-center justify-center bg-teal-700 w-9 h-9 rounded-3xl">
-            <StarIcon className="w-5 h-5" />
-          </div>
-          <Typography variant="h6" component="p" color="primary">
-            300
-          </Typography>
-        </div>
+        <UserPoints />
       </div>
       <div className="mb-10">
         <Typography variant="h5" className="font-bold text-center">

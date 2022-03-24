@@ -16,6 +16,8 @@ import Layout from "../components/shared/Layout";
 import { useAuthContext } from "../lib/data/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import History from "../components/shared/History";
+import Settings from "../components/shared/Settings";
 
 const style = {
   position: "absolute" as "absolute",
@@ -61,58 +63,7 @@ const Home: NextPage = () => {
         aria-describedby="modal-modal-description"
       >
         <div className="absolute p-4 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 w-96 bg-background-paper border-disabled rounded-xl">
-          <Typography variant="h6" component="h2" className="text-white">
-            Choose Quiz Settings
-          </Typography>
-          <FormControl fullWidth>
-            <InputLabel id="exam-type-label">Exam type</InputLabel>
-            <Select
-              labelId="exam-type-label"
-              value={examType}
-              label="Exam type"
-              onChange={handleExamTypeChange}
-            >
-              {[
-                "es",
-                "ms",
-                "hs",
-                "ksat",
-                "toeic",
-                "toefl",
-                "teps",
-                "sat",
-                "ielts",
-                "gre",
-                "gmat",
-                "overall",
-              ].map((examType) => (
-                <MenuItem
-                  key={examType}
-                  value={examType}
-                  className="text-black"
-                >
-                  {examType}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl fullWidth>
-            <InputLabel id="exam-level-label">Exam level</InputLabel>
-            <Select
-              labelId="exam-level-label"
-              value={level}
-              label="Exam level"
-              onChange={handleLevelChange}
-            >
-              {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map(
-                (level) => (
-                  <MenuItem key={level} value={level} className="text-black">
-                    {level}
-                  </MenuItem>
-                )
-              )}
-            </Select>
-          </FormControl>
+          <Settings />
         </div>
       </Modal>
       <Layout pageName="Home">
@@ -161,39 +112,7 @@ const Home: NextPage = () => {
               </div>
             </div>
           </section>
-          <section className="mb-12">
-            <Typography variant="h4" className="mb-4 text-3xl md:text-4xl">
-              Quiz History
-            </Typography>
-            <div className="flex items-center gap-8 px-3 py-2 rounded-lg bg-background-paper">
-              <Typography
-                className="text-xs truncate basis-1/4 text-ellipsis"
-                color="text.secondary"
-              >
-                Mar, 5, 2022 08:10
-              </Typography>
-              <Typography
-                className="font-bold truncate basis-2/4 text-ellipsis"
-                color="text.secondary"
-              >
-                Untitled1
-              </Typography>
-              <div className="flex gap-1">
-                <Typography
-                  className="font-bold basis-1/4"
-                  color="text.secondary"
-                >
-                  30
-                </Typography>
-                <Typography
-                  className="font-bold basis-1/4 text-ellipsis"
-                  color="text.secondary"
-                >
-                  points
-                </Typography>
-              </div>
-            </div>
-          </section>
+          <History />
           <Link href={MAIN_QUIZ}>
             <a>
               <Button variant="outlined">Go to Quiz</Button>
