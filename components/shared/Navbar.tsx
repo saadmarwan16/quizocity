@@ -15,7 +15,6 @@ import {
   LEADERBOARD,
   LOGIN,
   MAIN_QUIZ,
-  PERFORMANCE,
   PROFILE,
 } from "../../lib/constants/routes";
 import NavItem from "./NavItem";
@@ -66,7 +65,7 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
 
         <div className="flex items-center gap-6">
           <NavItem
-            isActive={router.pathname === MAIN_QUIZ}
+            isActive={router.pathname.includes(MAIN_QUIZ)}
             name="Quiz"
             path={MAIN_QUIZ}
           />

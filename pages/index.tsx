@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import History from "../components/shared/History";
 import Settings from "../components/shared/Settings";
+import { quizArea } from "../lib/data";
 
 const style = {
   position: "absolute" as "absolute",
@@ -72,9 +73,17 @@ const Home: NextPage = () => {
             <Typography variant="h4" className="mb-4 text-3xl md:text-4xl">
               Explore
             </Typography>
-            {/* <div className="grid grid-cols-12 gap-6"> */}
             <div className="flex flex-wrap justify-center gap-6">
-              <div className="flex flex-col items-center justify-center gap-6 p-8 cursor-pointer w-52 h-52 md:w-80 md:h-80 bg-background-paper rounded-xl border-explore">
+              <div
+                className="flex flex-col items-center justify-center gap-6 p-8 cursor-pointer w-52 h-52 md:w-80 md:h-80 bg-background-paper rounded-xl border-explore"
+                onClick={() => {
+                  const currentQuizArea =
+                    quizArea[Math.round(Math.random() * 10)];
+                  const quizLevel = Math.round(Math.random() * 9) + 1;
+
+                  router.push(`${MAIN_QUIZ}/${currentQuizArea}/${quizLevel}`);
+                }}
+              >
                 <div className="flex items-center justify-center w-12 h-12 bg-teal-700 rounded-3xl">
                   <AddIcon className="text-text-primary" />
                 </div>

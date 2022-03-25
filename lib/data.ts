@@ -87,5 +87,4 @@ export const quizArea = [
   "ielts",
   "gre",
   "gmat",
-  "overall",
 ];
