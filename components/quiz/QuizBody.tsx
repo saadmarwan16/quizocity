@@ -6,12 +6,12 @@ import QuizQuestionsTime from "./QuizQuestionsTime";
 import Divider from "@mui/material/Divider";
 import QuizNextQuestionButton from "./QuizNextQuestionButton";
 import { Button } from "@mui/material";
-import { AnswersContext, QuestionsPointerContext, QuizLocationContext } from "../../lib/data/providers";
+import { QuizLocationContext } from "../../lib/data/providers";
+import { QuizContext } from "../../pages/quiz/[[...slug]]";
 
 const QuizBody: FunctionComponent = () => {
-  const { questionsPointer } = useContext(QuestionsPointerContext)!;
-  const {answers} = useContext(AnswersContext)!;
-  const {setQuizLocation} = useContext(QuizLocationContext)!;
+  const { questionsPointer, answers } = useContext(QuizContext)!;
+  const { setQuizLocation } = useContext(QuizLocationContext)!;
 
   return (
     <>
@@ -24,7 +24,11 @@ const QuizBody: FunctionComponent = () => {
       <MainQuiz />
       <div className="flex flex-wrap justify-center gap-2 py-6">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-          <QuizControlsButton clickedNum={num} key={num} isAnswered={!!answers[num - 1]} />
+          <QuizControlsButton
+            clickedNum={num}
+            key={num}
+            isAnswered={!!answers[num - 1]}
+          />
         ))}
       </div>
 
@@ -32,14 +36,14 @@ const QuizBody: FunctionComponent = () => {
         <QuizNextQuestionButton />
       ) : (
         <div className="flex justify-end">
-              <Button
-                variant="contained"
-                disableElevation
-                color="secondary"
-                onClick={() => setQuizLocation('submit')}
-              >
-                Submit page
-              </Button>
+          <Button
+            variant="contained"
+            disableElevation
+            color="secondary"
+            onClick={() => setQuizLocation("submit")}
+          >
+            Submit page
+          </Button>
         </div>
       )}
     </>

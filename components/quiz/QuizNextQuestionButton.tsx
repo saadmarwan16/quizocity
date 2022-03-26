@@ -1,9 +1,11 @@
 import { Button } from "@mui/material";
+import { doc, updateDoc } from "firebase/firestore";
 import { FunctionComponent, useContext } from "react";
-import { QuestionsPointerContext } from "../../lib/data/providers";
+import { firestore, increment } from "../../lib/utils/firebaseInit";
+import { QuizContext } from "../../pages/quiz/[[...slug]]";
 
 const QuizNextQuestionButton: FunctionComponent = () => {
-  const {questionsPointer, setQuestionsPointer} = useContext(QuestionsPointerContext)!;
+  const { path } = useContext(QuizContext)!;
 
   return (
     <div className="flex justify-end">
@@ -11,7 +13,12 @@ const QuizNextQuestionButton: FunctionComponent = () => {
         variant="contained"
         disableElevation
         color="secondary"
-        onClick={() => setQuestionsPointer(questionsPointer + 1)}
+        onClick={() => {
+          const ref = doc(firestore, path);
+          updateDoc(ref, {
+            questionsPointer: increment(1),
+          });
+        }}
       >
         Next question
       </Button>

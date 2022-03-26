@@ -1,14 +1,14 @@
 import { FunctionComponent, useContext } from "react";
-import { Button, CircularProgress, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import {
-  AnswersContext,
   QuizLocationContext,
   TimerContext,
 } from "../../lib/data/providers";
 import capitalize from "../../lib/utils/capitalize";
+import { QuizContext } from "../../pages/quiz/[[...slug]]";
 
 const QuizSubmit: FunctionComponent = () => {
-  const { answers } = useContext(AnswersContext)!;
+  const { answers } = useContext(QuizContext)!;
   const { setQuizLocation } = useContext(QuizLocationContext)!;
   const timer = useContext(TimerContext);
   const percentageCompleted =

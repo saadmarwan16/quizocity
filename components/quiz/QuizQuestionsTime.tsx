@@ -1,9 +1,10 @@
 import { CircularProgress, Typography } from "@mui/material";
 import { FunctionComponent, useContext } from "react";
-import { QuestionsPointerContext, TimerContext } from "../../lib/data/providers";
+import { TimerContext } from "../../lib/data/providers";
+import { QuizContext } from "../../pages/quiz/[[...slug]]";
 
 const QuizQuestionsTime: FunctionComponent = () => {
-  const { questionsPointer } = useContext(QuestionsPointerContext)!;
+  const { questionsPointer } = useContext(QuizContext)!;
   const timer = useContext(TimerContext);
 
   return (

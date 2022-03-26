@@ -4,29 +4,31 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from "@mui/material/Typography";
 import { ChangeEvent, FunctionComponent, useContext } from "react";
-import {
-  AnswersContext,
-  QuestionsContext,
-  QuestionsPointerContext,
-} from "../../lib/data/providers";
-import { IAnswers } from "../../lib/data_types/types";
 import capitalize from "../../lib/utils/capitalize";
 import getBorderColor from "../../lib/utils/getBorderColor";
+import { QuizContext } from "../../pages/quiz/[[...slug]]";
+import { TAnswers } from "../../lib/data_types/types";
+import { firestore } from "../../lib/utils/firebaseInit";
+import { doc, updateDoc } from "firebase/firestore";
 
 const MainQuiz: FunctionComponent = () => {
-  const { answers, setAnswers } = useContext(AnswersContext)!;
   const {
+    path,
+    answers,
     questions: { quizlist },
-  } = useContext(QuestionsContext)!;
-  const { questionsPointer } = useContext(QuestionsPointerContext)!;
+    questionsPointer,
+  } = useContext(QuizContext)!;
   const { option, quiz } = quizlist[questionsPointer - 1];
   const answer = answers[questionsPointer - 1];
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const res: IAnswers = answers.map((value, index) =>
+    const res: TAnswers = answers.map((value, index) =>
       index === questionsPointer - 1 ? event.target.value : value
-    ) as IAnswers;
-    setAnswers(res);
+    ) as TAnswers;
+    const ref = doc(firestore, path);
+    updateDoc(ref, {
+      answers: res,
+    });
   };
 
   return (

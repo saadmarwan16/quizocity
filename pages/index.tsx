@@ -81,7 +81,7 @@ const Home: NextPage = () => {
                     quizArea[Math.round(Math.random() * 10)];
                   const quizLevel = Math.round(Math.random() * 9) + 1;
 
-                  router.push(`${MAIN_QUIZ}/${currentQuizArea}/${quizLevel}`);
+                  router.push(`${MAIN_QUIZ}/${user?.uid}/${currentQuizArea}/${quizLevel}`);
                 }}
               >
                 <div className="flex items-center justify-center w-12 h-12 bg-teal-700 rounded-3xl">

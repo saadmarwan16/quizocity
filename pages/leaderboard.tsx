@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Typography } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import UserPoints from "../components/shared/UserPoints";
-import { collection, getDocs, QuerySnapshot } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "../lib/utils/firebaseInit";
 import { ILeaderboard } from "../lib/data_types/interfaces";
 import { useAuthContext } from "../lib/data/contexts/AuthContext";
@@ -40,8 +40,12 @@ const Leaderboard: NextPage<LeaderboardProps> = ({ leaderboard }) => {
                     height={50}
                     className="rounded-full"
                   />
-                  <Typography className={user?.uid === uid ? 'font-semibold text-teal-500' : ''}>
-                    {displayName} {user?.uid === uid && '(me)'}
+                  <Typography
+                    className={
+                      user?.uid === uid ? "font-semibold text-teal-500" : ""
+                    }
+                  >
+                    {displayName} {user?.uid === uid && "(me)"}
                   </Typography>
                 </div>
               </div>

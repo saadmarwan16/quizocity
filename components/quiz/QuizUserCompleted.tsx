@@ -6,10 +6,10 @@ import {
 } from "@mui/material";
 import { FunctionComponent, useContext } from "react";
 import { useAuthContext } from "../../lib/data/contexts/AuthContext";
-import { AnswersContext } from "../../lib/data/providers";
+import { QuizContext } from "../../pages/quiz/[[...slug]]";
 
 const QuizUserCompleted: FunctionComponent = () => {
-  const { answers } = useContext(AnswersContext)!;
+  const { answers } = useContext(QuizContext)!;
   const {
     authState: [user],
   } = useAuthContext();
@@ -23,7 +23,9 @@ const QuizUserCompleted: FunctionComponent = () => {
           src={user?.photoURL ?? "/person.png"}
           sx={{ width: 56, height: 56 }}
         />
-        <Typography>{user?.displayName?.toUpperCase() ?? "Anonymous User"}</Typography>
+        <Typography>
+          {user?.displayName?.toUpperCase() ?? "Anonymous User"}
+        </Typography>
       </div>
       <div className="flex flex-col gap-2">
         <Typography>Total Test: {percentageCompleted}% completed</Typography>

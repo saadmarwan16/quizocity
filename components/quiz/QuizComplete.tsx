@@ -1,25 +1,29 @@
 import { Button, Typography } from "@mui/material";
-import { FunctionComponent, useContext, useEffect, useRef, useState } from "react";
+import {
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import StarIcon from "@mui/icons-material/Star";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
-import router from "next/router";
+import { useRouter } from "next/router";
 import { HOME, LEADERBOARD } from "../../lib/constants/routes";
-import {
-  AnswersContext,
-  QuestionsContext,
-} from "../../lib/data/providers";
 import { useAuthContext } from "../../lib/data/contexts/AuthContext";
 import UserPoints from "../shared/UserPoints";
+import { QuizContext } from "../../pages/quiz/[[...slug]]";
 
 interface QuizCompleteProps {}
 
 const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
+  const router = useRouter();
   const {
     authState: [user],
   } = useAuthContext();
-  const { questions } = useContext(QuestionsContext)!;
-  const { answers } = useContext(AnswersContext)!;
+  const { questions, answers } = useContext(QuizContext)!;
+  // const { answers } = useContext(AnswersContext)!;
   const [score, setScore] = useState<number | null>(null);
   const isMounted = useRef(false);
   const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
@@ -41,9 +45,9 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
     setScore(currentScore);
     setCorrectAnswers(currentCorrectAnswers);
 
-    return (() => {
+    return () => {
       isMounted.current = false;
-    })
+    };
   }, [answers, questions.quizlist]);
 
   return (

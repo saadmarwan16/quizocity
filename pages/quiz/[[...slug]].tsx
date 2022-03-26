@@ -1,117 +1,62 @@
 import { GetServerSideProps, NextPage } from "next";
-import { useCallback, useEffect, useState } from "react";
-import { IQuestions } from "../../lib/data_types/interfaces";
+import { createContext, useEffect, useState } from "react";
 import {
-  AnswersContext,
-  QuestionsPointerContext,
-  QuizLocationContext,
-  TimerContext,
-} from "../../lib/data/providers";
-import { initialAnswers, quizArea, quizLevel } from "../../lib/data";
-import {
-  getQuestionsLocal,
-  useQuestionsLocal,
-} from "../../lib/data/local_data_sources/questionsLocal";
-import {
-  getAnswersLocal,
-  useAnswersLocal,
-} from "../../lib/data/local_data_sources/answersLocal";
-import {
-  getQuestionsPointerLocal,
-  useQuestionPointerLocal,
-} from "../../lib/data/local_data_sources/questionsPointerLocal";
+  IQuestions,
+  IQuiz,
+  IQuizContext,
+} from "../../lib/data_types/interfaces";
+import { QuizLocationContext, TimerContext } from "../../lib/data/providers";
+import { initialAnswers } from "../../lib/data";
 import QuizBody from "../../components/quiz/QuizBody";
-import { TAnswers } from "../../lib/data_types/types";
 import QuizSubmit from "../../components/quiz/QuizSubmit";
 import { useQuizLocationLocal } from "../../lib/data/local_data_sources/quizLocationLocal";
 import QuizComplete from "../../components/quiz/QuizComplete";
 import Layout from "../../components/shared/Layout";
-import { auth } from "../../lib/utils/firebaseInit";
-import QuizContextProvider from "../../lib/data/contexts/QuizContext";
+import { firestore } from "../../lib/utils/firebaseInit";
+import { addDoc, collection, doc, DocumentReference } from "firebase/firestore";
+import { MAIN_QUIZ } from "../../lib/constants/routes";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+
+export const QuizContext = createContext<IQuizContext | null>(null);
 
 interface PageProps {
-  questions: IQuestions;
-  answers: TAnswers;
-  questionsPointer: number;
+  path: string;
 }
 
-const Quiz: NextPage<PageProps> = (props) => {
-  // const [questions, setQuestions] = useQuestionsLocal();
-  // const [answers, setAnswers] = useAnswersLocal();
-  // const [questionsPointer, setQuestionsPointer] = useQuestionPointerLocal();
-  const [questions, setQuestions] = useState<IQuestions>(props.questions);
-  const [answers, setAnswers] = useState<TAnswers>(props.answers);
-  const [questionsPointer, setQuestionsPointer] = useState<number>(
-    props.questionsPointer
-  );
-
+const Quiz: NextPage<PageProps> = ({ path }) => {
+  const quizRef = doc(firestore, path) as DocumentReference<IQuiz>;
+  const [snapshot, loading, error] = useDocumentData<IQuiz>(quizRef);
   const [quizLocation, setQuizLocation] = useQuizLocationLocal();
   const [timer, setTimer] = useState<number>(100000);
 
-  // const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
-  // const apiHost = process.env.NEXT_PUBLIC_API_HOST as string;
-  // const apiKey = process.env.NEXT_PUBLIC_API_KEY as string;
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setTimer((timer) => (timer -= 1));
+    }, 1000);
 
-  // const fetcher = useCallback(async () => {
-  //   const response = await fetch(`${apiUrl}/?level=3&area=sat`, {
-  //     method: "GET",
-  //     headers: {
-  //       "x-rapidapi-host": apiHost,
-  //       "x-rapidapi-key": apiKey,
-  //     },
-  //   });
-  //   const results = await response.json();
+    if (timer <= 0) {
+      clearTimeout(timerId);
+      setQuizLocation("complete");
+    }
 
-  //   return results;
-  // }, [apiHost, apiKey, apiUrl]);
-
-  // const getQuiz = useCallback(
-  //   (questions: IQuestions, answers: TAnswers, questionsPointer: number) => {
-  //     setQuestions(questions);
-  //     setAnswers(answers);
-  //     setQuestionsPointer(questionsPointer);
-  //   },
-  //   [setAnswers, setQuestions, setQuestionsPointer]
-  // );
-
-  // useEffect(() => {
-  //   const fetchQuestions = async () => {
-  //     const results = (await fetcher()) as IQuestions;
-  //     getQuiz(results, initialAnswers, 1);
-  //   };
-
-  //   const timerId = setTimeout(() => {
-  //     setTimer((timer) => (timer -= 1));
-  //   }, 1000);
-
-  //   if (timer <= 0) {
-  //     clearTimeout(timerId);
-  //     setQuizLocation("complete");
-  //   }
-
-  //   if (
-  //     !getQuestionsLocal() ||
-  //     !getAnswersLocal() ||
-  //     !getQuestionsPointerLocal()
-  //   ) {
-  //     localStorage.clear();
-  //     fetchQuestions();
-  //   } else {
-  //     getQuiz(
-  //       getQuestionsLocal()!,
-  //       getAnswersLocal()!,
-  //       getQuestionsPointerLocal()!
-  //     );
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [fetcher, getQuiz, timer]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timer]);
 
   return (
     <Layout pageName="Quiz">
-      {questions === null ? (
-        <div>Error...</div>
-      ) : (
-        <QuizContextProvider>
+      {loading && <div>Loading ...</div>}
+
+      {error && <div>Error...</div>}
+
+      {snapshot && (
+        <QuizContext.Provider
+          value={{
+            path,
+            questions: snapshot.questions,
+            answers: snapshot.answers,
+            questionsPointer: snapshot.questionsPointer,
+          }}
+        >
           <QuizLocationContext.Provider
             value={{ quizLocation, setQuizLocation }}
           >
@@ -125,7 +70,7 @@ const Quiz: NextPage<PageProps> = (props) => {
               {quizLocation === "complete" && <QuizComplete />}
             </TimerContext.Provider>
           </QuizLocationContext.Provider>
-        </QuizContextProvider>
+        </QuizContext.Provider>
       )}
     </Layout>
   );
@@ -138,16 +83,21 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     return {
       props: { questionsProps: null },
     };
-  } else if (typeof params === "string") {
+  } else if (params.length === 2) {
+    const path = `users/${params[0]}/quiz/${params[1]}`;
+
     return {
-      props: { questionsProps: "string" },
+      props: {
+        path,
+      },
     };
-  } else {
+  } else if (params.length === 3) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
     const apiHost = process.env.NEXT_PUBLIC_API_HOST as string;
     const apiKey = process.env.NEXT_PUBLIC_API_KEY as string;
-    const area = params[0];
-    const level = params[1];
+    const userId = params[0];
+    const area = params[1];
+    const level = params[2];
 
     const response = await fetch(`${apiUrl}/?level=${level}&area=${area}`, {
       method: "GET",
@@ -157,15 +107,24 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       },
     });
     const questions = (await response.json()) as IQuestions;
+    const quizRef = collection(firestore, `users/${userId}/quiz`);
+    const quizDocRef = await addDoc(quizRef, {
+      questions: questions,
+      answers: initialAnswers,
+      questionsPointer: 1,
+    });
 
     return {
-      props: {
-        questions: questions,
-        answers: initialAnswers,
-        questionsPointer: 0,
+      redirect: {
+        destination: `${MAIN_QUIZ}/${userId}/${quizDocRef.id}`,
+        permanent: false,
       },
     };
   }
+
+  return {
+    notFound: true,
+  };
 };
 
 export default Quiz;

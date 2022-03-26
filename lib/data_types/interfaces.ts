@@ -20,6 +20,13 @@ export interface IQuiz {
   questionsPointer: number;
 }
 
+export interface IQuizContext {
+  path: string;
+  questions: IQuestions;
+  answers: TAnswers;
+  questionsPointer: number;
+}
+
 export interface ILoginInput {
   email: string;
   password: string;
