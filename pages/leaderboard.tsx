@@ -8,6 +8,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { firestore } from "../lib/utils/firebaseInit";
 import { ILeaderboard } from "../lib/data_types/interfaces";
 import { useAuthContext } from "../lib/data/contexts/AuthContext";
+import capitalize from "../lib/utils/capitalize";
 
 interface LeaderboardProps {
   leaderboard: ILeaderboard[];
@@ -45,7 +46,7 @@ const Leaderboard: NextPage<LeaderboardProps> = ({ leaderboard }) => {
                       user?.uid === uid ? "font-semibold text-teal-500" : ""
                     }
                   >
-                    {displayName} {user?.uid === uid && "(me)"}
+                    {capitalize(displayName)} {user?.uid === uid && "(me)"}
                   </Typography>
                 </div>
               </div>

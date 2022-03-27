@@ -19,7 +19,7 @@ import {
 } from "../../lib/constants/routes";
 import NavItem from "./NavItem";
 import LoginIcon from "@mui/icons-material/Login";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
 import Drawer from "./Drawer";
 import { useAuthContext } from "../../lib/data/contexts/AuthContext";
@@ -67,7 +67,7 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
           <NavItem
             isActive={router.pathname.includes(MAIN_QUIZ)}
             name="Quiz"
-            path={MAIN_QUIZ}
+            path={`${MAIN_QUIZ}/${user?.uid}`}
           />
           <NavItem
             isActive={router.pathname === FAVORITES}

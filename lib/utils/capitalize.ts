@@ -1,5 +1,14 @@
 const capitalize = (str: string): string => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  const stringArray = str.split(" ");
+  let finalStr = "";
+  stringArray.forEach((singleStr) => {
+    finalStr +=
+      singleStr.charAt(0).toUpperCase() +
+      singleStr.slice(1).toLowerCase() +
+      " ";
+  });
+
+  return finalStr;
 };
 
 export default capitalize;

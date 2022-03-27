@@ -80,6 +80,7 @@ const Home: NextPage = () => {
                   const currentQuizArea =
                     quizArea[Math.round(Math.random() * 10)];
                   const quizLevel = Math.round(Math.random() * 9) + 1;
+                  localStorage.clear();
 
                   router.push(`${MAIN_QUIZ}/${user?.uid}/${currentQuizArea}/${quizLevel}`);
                 }}

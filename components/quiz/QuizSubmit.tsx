@@ -1,14 +1,18 @@
 import { FunctionComponent, useContext } from "react";
 import { Button, Typography } from "@mui/material";
-import {
-  QuizLocationContext,
-  TimerContext,
-} from "../../lib/data/providers";
+import { QuizLocationContext, TimerContext } from "../../lib/data/providers";
 import capitalize from "../../lib/utils/capitalize";
 import { QuizContext } from "../../pages/quiz/[[...slug]]";
+import getScore from "../../lib/utils/getScore";
+import { doc, writeBatch } from "firebase/firestore";
+import { useAuthContext } from "../../lib/data/contexts/AuthContext";
+import { firestore, increment } from "../../lib/utils/firebaseInit";
 
 const QuizSubmit: FunctionComponent = () => {
-  const { answers } = useContext(QuizContext)!;
+  const {
+    authState: [user],
+  } = useAuthContext();
+  const { questions, answers } = useContext(QuizContext)!;
   const { setQuizLocation } = useContext(QuizLocationContext)!;
   const timer = useContext(TimerContext);
   const percentageCompleted =
@@ -85,7 +89,23 @@ const QuizSubmit: FunctionComponent = () => {
           <Button
             variant="contained"
             color="secondary"
-            onClick={() => setQuizLocation("complete")}
+            onClick={async () => {
+              const { points } = getScore(questions, answers);
+              const userLeaderboardRef = doc(
+                firestore,
+                `users/${user?.uid}/userInfo/points`
+              );
+              const leaderboardRef = doc(firestore, `leaderboard/${user?.uid}`);
+              const batch = writeBatch(firestore);
+              batch.update(leaderboardRef, {
+                points: increment(points),
+              });
+              batch.set(userLeaderboardRef, {
+                points: increment(points),
+              });
+              await batch.commit();
+              setQuizLocation("complete");
+            }}
           >
             Submit
           </Button>

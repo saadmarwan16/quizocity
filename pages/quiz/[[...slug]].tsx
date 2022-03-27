@@ -1,21 +1,18 @@
 import { GetServerSideProps, NextPage } from "next";
 import { createContext, useEffect, useState } from "react";
-import {
-  IQuestions,
-  IQuiz,
-  IQuizContext,
-} from "../../lib/data_types/interfaces";
+import { IQuiz, IQuizContext } from "../../lib/data_types/interfaces";
 import { QuizLocationContext, TimerContext } from "../../lib/data/providers";
-import { initialAnswers } from "../../lib/data";
+import { quizArea } from "../../lib/data";
 import QuizBody from "../../components/quiz/QuizBody";
 import QuizSubmit from "../../components/quiz/QuizSubmit";
 import { useQuizLocationLocal } from "../../lib/data/local_data_sources/quizLocationLocal";
 import QuizComplete from "../../components/quiz/QuizComplete";
 import Layout from "../../components/shared/Layout";
-import { firestore } from "../../lib/utils/firebaseInit";
-import { addDoc, collection, doc, DocumentReference } from "firebase/firestore";
+import { fetchQuiz, firestore } from "../../lib/utils/firebaseInit";
+import { doc, DocumentReference } from "firebase/firestore";
 import { MAIN_QUIZ } from "../../lib/constants/routes";
 import { useDocumentData } from "react-firebase-hooks/firestore";
+import QuizSkeleton from "../../components/quiz/QuizSkeleton";
 
 export const QuizContext = createContext<IQuizContext | null>(null);
 
@@ -44,7 +41,14 @@ const Quiz: NextPage<PageProps> = ({ path }) => {
 
   return (
     <Layout pageName="Quiz">
-      {loading && <div>Loading ...</div>}
+      {/* <div className="flex flex-col justify-center w-full min-h-screen p-8 mx-auto md:w-4/5 bg-background md:bg-background-paper rounded-xl md:min-h-fit">
+        <QuizSkeleton />
+      </div> */}
+      {loading && (
+        <div className="flex flex-col justify-center w-full min-h-screen p-8 mx-auto md:w-4/5 bg-background md:bg-background-paper rounded-xl md:min-h-fit">
+          <QuizSkeleton />
+        </div>
+      )}
 
       {error && <div>Error...</div>}
 
@@ -81,7 +85,23 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   if (!params) {
     return {
-      props: { questionsProps: null },
+      notFound: true,
+    };
+  }
+
+  if (params.length === 1) {
+    const quizId = await fetchQuiz(
+      params[0],
+      quizArea[Math.round(Math.random() * 10)],
+      (Math.round(Math.random() * 9) + 1).toString(),
+      false
+    );
+
+    return {
+      redirect: {
+        destination: `${MAIN_QUIZ}/${params[0]}/${quizId}`,
+        permanent: false,
+      },
     };
   } else if (params.length === 2) {
     const path = `users/${params[0]}/quiz/${params[1]}`;
@@ -92,31 +112,11 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       },
     };
   } else if (params.length === 3) {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL as string;
-    const apiHost = process.env.NEXT_PUBLIC_API_HOST as string;
-    const apiKey = process.env.NEXT_PUBLIC_API_KEY as string;
-    const userId = params[0];
-    const area = params[1];
-    const level = params[2];
-
-    const response = await fetch(`${apiUrl}/?level=${level}&area=${area}`, {
-      method: "GET",
-      headers: {
-        "x-rapidapi-host": apiHost,
-        "x-rapidapi-key": apiKey,
-      },
-    });
-    const questions = (await response.json()) as IQuestions;
-    const quizRef = collection(firestore, `users/${userId}/quiz`);
-    const quizDocRef = await addDoc(quizRef, {
-      questions: questions,
-      answers: initialAnswers,
-      questionsPointer: 1,
-    });
+    const quizId = await fetchQuiz(params[0], params[1], params[2], true);
 
     return {
       redirect: {
-        destination: `${MAIN_QUIZ}/${userId}/${quizDocRef.id}`,
+        destination: `${MAIN_QUIZ}/${params[0]}/${quizId}`,
         permanent: false,
       },
     };

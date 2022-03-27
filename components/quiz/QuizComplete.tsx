@@ -3,7 +3,6 @@ import {
   FunctionComponent,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import StarIcon from "@mui/icons-material/Star";
@@ -11,43 +10,29 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useRouter } from "next/router";
 import { HOME, LEADERBOARD } from "../../lib/constants/routes";
-import { useAuthContext } from "../../lib/data/contexts/AuthContext";
 import UserPoints from "../shared/UserPoints";
 import { QuizContext } from "../../pages/quiz/[[...slug]]";
+import getScore from "../../lib/utils/getScore";
 
 interface QuizCompleteProps {}
 
 const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
   const router = useRouter();
-  const {
-    authState: [user],
-  } = useAuthContext();
   const { questions, answers } = useContext(QuizContext)!;
-  // const { answers } = useContext(AnswersContext)!;
   const [score, setScore] = useState<number | null>(null);
-  const isMounted = useRef(false);
+  const [earnedPoints, setEarnedPoints] = useState<number>(0);
   const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
 
   useEffect(() => {
-    let currentScore = 0;
-    let currentCorrectAnswers = [];
-    isMounted.current = true;
-
-    for (let i = 0; i < 10; i++) {
-      const correctAnswerIndex = questions.quizlist[i].correct;
-      const correctAnswer =
-        questions.quizlist[i].option[correctAnswerIndex - 1];
-
-      currentCorrectAnswers.push(correctAnswer);
-      if (correctAnswer === answers[i]) currentScore += 1;
-    }
+    const { currentScore, currentCorrectAnswers, points } = getScore(
+      questions,
+      answers
+    );
 
     setScore(currentScore);
     setCorrectAnswers(currentCorrectAnswers);
-
-    return () => {
-      isMounted.current = false;
-    };
+    setEarnedPoints(points);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answers, questions.quizlist]);
 
   return (
@@ -57,10 +42,16 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
       </div>
       <div className="mb-10">
         <Typography variant="h5" className="font-bold text-center">
-          Wow...
+          {score && score < 4 && "Practise..."}
+          {score && score < 8 && "Improvement..."}
+          {score && score >= 8 && "Wow..."}
         </Typography>
         <Typography className="text-text-secondary">
-          That was breath-taking. Keep it up
+          {score &&
+            score < 4 &&
+            "Nobody gets it right on their first few attempts"}
+          {score && score < 8 && "There is always more room for improvement"}
+          {score && score >= 8 && "That was breath-taking. Keep it up"}
         </Typography>
       </div>
       <div className="flex flex-col gap-4 mb-10 md:gap-24 sm:flex-row">
@@ -81,9 +72,24 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
             <div className="inline-flex items-center justify-center bg-teal-700 w-9 h-9 rounded-3xl">
               <StarIcon className="w-5 h-5" />
             </div>
-            <Typography color="error" variant="h4">
-              -15
-            </Typography>
+            {earnedPoints === 0 && (
+              <Typography
+                className={0 < 0 ? "text-red-600" : "text-green-600"}
+                variant="h4"
+              >
+                {earnedPoints}
+              </Typography>
+            )}
+            {earnedPoints < 0 && (
+              <Typography className="text-red-600" variant="h4">
+                {earnedPoints}
+              </Typography>
+            )}
+            {earnedPoints > 0 && (
+              <Typography className="text-green-600" variant="h4">
+                +{earnedPoints}
+              </Typography>
+            )}
           </div>
         </div>
       </div>
@@ -93,7 +99,6 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
           color="secondary"
           onClick={async () => {
             await router.push(HOME);
-            isMounted && localStorage.clear();
           }}
         >
           Go to Home
@@ -103,21 +108,11 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
           color="secondary"
           onClick={async () => {
             await router.push(LEADERBOARD);
-            isMounted && localStorage.clear();
           }}
         >
           See Leaderboard
         </Button>
       </div>
-      {/* <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => {
-          setQuizLocation("main");
-        }}
-      >
-        Go back
-      </Button> */}
       <div className="flex flex-col w-full gap-3 sm:w-5/6 md:w-3/4">
         <Typography className="font-bold" variant="h6">
           Results Details

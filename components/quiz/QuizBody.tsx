@@ -5,12 +5,12 @@ import QuizUserCompleted from "./QuizUserCompleted";
 import QuizQuestionsTime from "./QuizQuestionsTime";
 import Divider from "@mui/material/Divider";
 import QuizNextQuestionButton from "./QuizNextQuestionButton";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { QuizLocationContext } from "../../lib/data/providers";
 import { QuizContext } from "../../pages/quiz/[[...slug]]";
 
 const QuizBody: FunctionComponent = () => {
-  const { questionsPointer, answers } = useContext(QuizContext)!;
+  const { questions: {author, email}, questionsPointer, answers } = useContext(QuizContext)!;
   const { setQuizLocation } = useContext(QuizLocationContext)!;
 
   return (
@@ -46,6 +46,10 @@ const QuizBody: FunctionComponent = () => {
           </Button>
         </div>
       )}
+      <div className="flex flex-col items-end mt-6">
+        <Typography variant="caption" color="text.disabled">author: {author}</Typography>
+        <Typography variant="caption" color="text.disabled">email: {email}</Typography>
+      </div>
     </>
   );
 };
