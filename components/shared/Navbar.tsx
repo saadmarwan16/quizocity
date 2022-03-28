@@ -72,7 +72,7 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
           <NavItem
             isActive={router.pathname === FAVORITES}
             name="Favorites"
-            path={FAVORITES}
+            path={`${FAVORITES}/${user?.uid}`}
           />
           <NavItem
             isActive={router.pathname === LEADERBOARD}

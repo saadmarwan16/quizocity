@@ -18,9 +18,10 @@ export const QuizContext = createContext<IQuizContext | null>(null);
 
 interface PageProps {
   path: string;
+  favoritesPath: string;
 }
 
-const Quiz: NextPage<PageProps> = ({ path }) => {
+const Quiz: NextPage<PageProps> = ({ path, favoritesPath }) => {
   const quizRef = doc(firestore, path) as DocumentReference<IQuiz>;
   const [snapshot, loading, error] = useDocumentData<IQuiz>(quizRef);
   const [quizLocation, setQuizLocation] = useQuizLocationLocal();
@@ -56,6 +57,7 @@ const Quiz: NextPage<PageProps> = ({ path }) => {
         <QuizContext.Provider
           value={{
             path,
+            favoritesPath,
             questions: snapshot.questions,
             answers: snapshot.answers,
             questionsPointer: snapshot.questionsPointer,
@@ -105,10 +107,12 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     };
   } else if (params.length === 2) {
     const path = `users/${params[0]}/quiz/${params[1]}`;
+    const favoritesPath = `users/${params[0]}/favorites/${params[1]}`;
 
     return {
       props: {
         path,
+        favoritesPath,
       },
     };
   } else if (params.length === 3) {

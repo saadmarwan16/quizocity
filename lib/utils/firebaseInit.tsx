@@ -8,6 +8,8 @@ import {
   getFirestore,
   increment as firebaseIncrement,
   setDoc,
+  Timestamp as FirebaseTimestamp,
+  serverTimestamp as firebaseServerTimestamp,
 } from "firebase/firestore";
 import { initialAnswers } from "../data";
 import { IQuestions } from "../data_types/interfaces";
@@ -48,9 +50,13 @@ export const fetchQuiz = async (
     });
 
     const questions = (await response.json()) as IQuestions;
+    for (let i = 0; i < 10; i++) {
+      const question = questions.quizlist[i];
+      questions.quizlist[i] = { ...question, isFavorite: false };
+    }
     const quizRef = collection(firestore, `users/${userId}/quiz`);
     const quizDocRef = await addDoc(quizRef, {
-      questions: questions,
+      questions: { ...questions },
       answers: initialAnswers,
       questionsPointer: 1,
     });
@@ -76,7 +82,21 @@ export const fetchQuiz = async (
   return await createQuiz();
 };
 
+export const getDateTime = (seconds: number, nanoseconds: number) => {
+  const timestamp = new Timestamp(seconds, nanoseconds);
+  const dateTime = new Date(timestamp.toMillis());
+
+  const time = dateTime.toTimeString().split(' ')
+
+  return {
+    date: dateTime.toDateString(),
+    time: time[0],
+  };
+};
+
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
 export const increment = firebaseIncrement;
+export const Timestamp = FirebaseTimestamp;
+export const serverTimestamp = firebaseServerTimestamp;

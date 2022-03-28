@@ -100,6 +100,9 @@ const QuizSubmit: FunctionComponent = () => {
               batch.update(leaderboardRef, {
                 points: increment(points),
               });
+              // batch.update(userLeaderboardRef, {
+              //   points: increment(points),
+              // });
               batch.set(userLeaderboardRef, {
                 points: increment(points),
               });

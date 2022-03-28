@@ -8,9 +8,20 @@ import QuizNextQuestionButton from "./QuizNextQuestionButton";
 import { Button, Typography } from "@mui/material";
 import { QuizLocationContext } from "../../lib/data/providers";
 import { QuizContext } from "../../pages/quiz/[[...slug]]";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { doc, DocumentReference, getDoc, writeBatch } from "firebase/firestore";
+import { firestore, serverTimestamp } from "../../lib/utils/firebaseInit";
+import { IQuiz } from "../../lib/data_types/interfaces";
 
 const QuizBody: FunctionComponent = () => {
-  const { questions: {author, email}, questionsPointer, answers } = useContext(QuizContext)!;
+  const {
+    path,
+    favoritesPath,
+    questions: { area, level, author, email, quizlist },
+    questionsPointer,
+    answers,
+  } = useContext(QuizContext)!;
   const { setQuizLocation } = useContext(QuizLocationContext)!;
 
   return (
@@ -32,10 +43,69 @@ const QuizBody: FunctionComponent = () => {
         ))}
       </div>
 
-      {questionsPointer < 10 ? (
-        <QuizNextQuestionButton />
-      ) : (
-        <div className="flex justify-end">
+      <div className="flex flex-col justify-end gap-4 sm:flex-row">
+        <Button
+          variant="outlined"
+          disableElevation
+          color="secondary"
+          startIcon={
+            quizlist[questionsPointer - 1].isFavorite ? (
+              <FavoriteBorderIcon />
+            ) : (
+              <FavoriteIcon />
+            )
+          }
+          onClick={async () => {
+            const questionRef = doc(
+              firestore,
+              path
+            ) as DocumentReference<IQuiz>;
+            const quizDoc = await getDoc<IQuiz>(questionRef);
+            const data = quizDoc.data();
+            if (!data) return;
+
+            const quizlist = data.questions.quizlist;
+            const isFavorite =
+              data.questions.quizlist[questionsPointer - 1].isFavorite;
+            const currentQuizlist = quizlist.map((question, index) =>
+              index === questionsPointer - 1
+                ? { ...question, isFavorite: !isFavorite }
+                : question
+            );
+
+            const batch = writeBatch(firestore);
+            const ref = doc(
+              firestore,
+              favoritesPath,
+              `/questions/${questionsPointer}`
+            );
+            if (isFavorite) {
+              batch.delete(ref);
+            } else {
+              batch.set(ref, {
+                area,
+                level,
+                createdAt: serverTimestamp(),
+                quiz: quizlist[questionsPointer - 1].quiz,
+                option: quizlist[questionsPointer - 1].option,
+                correct: quizlist[questionsPointer - 1].correct,
+              });
+            }
+
+            batch.update(questionRef, {
+              questions: { ...data.questions, quizlist: currentQuizlist },
+            });
+
+            await batch.commit();
+          }}
+        >
+          {quizlist[questionsPointer - 1].isFavorite
+            ? "Unfavorite"
+            : "Favorite"}
+        </Button>
+        {questionsPointer < 10 ? (
+          <QuizNextQuestionButton />
+        ) : (
           <Button
             variant="contained"
             disableElevation
@@ -44,11 +114,16 @@ const QuizBody: FunctionComponent = () => {
           >
             Submit page
           </Button>
-        </div>
-      )}
+        )}
+      </div>
+
       <div className="flex flex-col items-end mt-6">
-        <Typography variant="caption" color="text.disabled">author: {author}</Typography>
-        <Typography variant="caption" color="text.disabled">email: {email}</Typography>
+        <Typography variant="caption" color="text.disabled">
+          author: {author}
+        </Typography>
+        <Typography variant="caption" color="text.disabled">
+          email: {email}
+        </Typography>
       </div>
     </>
   );

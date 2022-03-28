@@ -8,21 +8,19 @@ const QuizNextQuestionButton: FunctionComponent = () => {
   const { path } = useContext(QuizContext)!;
 
   return (
-    <div className="flex justify-end">
-      <Button
-        variant="contained"
-        disableElevation
-        color="secondary"
-        onClick={() => {
-          const ref = doc(firestore, path);
-          updateDoc(ref, {
-            questionsPointer: increment(1),
-          });
-        }}
-      >
-        Next question
-      </Button>
-    </div>
+    <Button
+      variant="contained"
+      disableElevation
+      color="secondary"
+      onClick={() => {
+        const ref = doc(firestore, path);
+        updateDoc(ref, {
+          questionsPointer: increment(1),
+        });
+      }}
+    >
+      Next question
+    </Button>
   );
 };
 

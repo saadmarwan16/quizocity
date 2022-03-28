@@ -1,6 +1,7 @@
 import { TAnswers } from "./types";
 
 export interface IQuestion {
+  isFavorite: boolean;
   correct: number;
   option: [string, string];
   quiz: [string, string, string];
@@ -22,6 +23,7 @@ export interface IQuiz {
 
 export interface IQuizContext {
   path: string;
+  favoritesPath: string;
   questions: IQuestions;
   answers: TAnswers;
   questionsPointer: number;
