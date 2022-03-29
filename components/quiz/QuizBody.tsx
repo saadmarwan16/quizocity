@@ -10,9 +10,19 @@ import { QuizLocationContext } from "../../lib/data/providers";
 import { QuizContext } from "../../pages/quiz/[[...slug]]";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { doc, DocumentReference, getDoc, writeBatch } from "firebase/firestore";
+import {
+  doc,
+  DocumentReference,
+  getDoc,
+  setDoc,
+  writeBatch,
+} from "firebase/firestore";
 import { firestore, serverTimestamp } from "../../lib/utils/firebaseInit";
-import { IQuiz } from "../../lib/data_types/interfaces";
+import {
+  IFavorite,
+  IFavoriteQuestion,
+  IQuiz,
+} from "../../lib/data_types/interfaces";
 
 const QuizBody: FunctionComponent = () => {
   const {
@@ -76,20 +86,54 @@ const QuizBody: FunctionComponent = () => {
             const batch = writeBatch(firestore);
             const ref = doc(
               firestore,
-              favoritesPath,
-              `/questions/${questionsPointer}`
-            );
+              favoritesPath
+            ) as DocumentReference<IFavorite>;
+            const favoritesDoc = await getDoc<IFavorite>(ref);
+            const favorites = favoritesDoc.data();
             if (isFavorite) {
-              batch.delete(ref);
-            } else {
+              const currentFavorites = favorites?.questions.filter(
+                (favorite) => favorite.questionNumber !== questionsPointer
+              );
+
               batch.set(ref, {
-                area,
-                level,
-                createdAt: serverTimestamp(),
-                quiz: quizlist[questionsPointer - 1].quiz,
-                option: quizlist[questionsPointer - 1].option,
-                correct: quizlist[questionsPointer - 1].correct,
+                questions: currentFavorites,
               });
+            } else {
+              let currentFavorites: IFavoriteQuestion[] | undefined = [];
+
+              if (!favoritesDoc.exists()) {
+                setDoc(ref, {
+                  questions: [],
+                }).then(async (_) => {
+                  const favoritesDoc = await getDoc<IFavorite>(ref);
+                  const favorites = favoritesDoc.data();
+                  currentFavorites = favorites?.questions;
+                  currentFavorites?.push({
+                    area,
+                    level,
+                    questionNumber: questionsPointer,
+                    quiz: quizlist[questionsPointer - 1].quiz,
+                    option: quizlist[questionsPointer - 1].option,
+                    correct: quizlist[questionsPointer - 1].correct,
+                  });
+                  setDoc(ref, {
+                    questions: currentFavorites,
+                  });
+                });
+              } else {
+                currentFavorites = favorites?.questions;
+                currentFavorites?.push({
+                  area,
+                  level,
+                  questionNumber: questionsPointer,
+                  quiz: quizlist[questionsPointer - 1].quiz,
+                  option: quizlist[questionsPointer - 1].option,
+                  correct: quizlist[questionsPointer - 1].correct,
+                });
+                batch.set(ref, {
+                  questions: currentFavorites,
+                });
+              }
             }
 
             batch.update(questionRef, {

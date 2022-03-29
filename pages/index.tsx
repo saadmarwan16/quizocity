@@ -1,11 +1,8 @@
 import {
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
+  LinearProgress,
   Modal,
-  Select,
   SelectChangeEvent,
+  Skeleton,
   Typography,
 } from "@mui/material";
 import { NextPage } from "next";
@@ -19,6 +16,12 @@ import { useRouter } from "next/router";
 import History from "../components/shared/History";
 import Settings from "../components/shared/Settings";
 import { quizArea } from "../lib/data";
+import { firestore, getDateTime } from "../lib/utils/firebaseInit";
+import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
+import { collection, CollectionReference } from "firebase/firestore";
+import { IQuiz } from "../lib/data_types/interfaces";
+import durationToHHMMSS from "../lib/utils/durationToHHMMSS";
+import getPercentageCompleted from "../lib/utils/getPercentageCompleted";
 
 const style = {
   position: "absolute" as "absolute",
@@ -50,10 +53,15 @@ const Home: NextPage = () => {
   const {
     authState: [user],
   } = useAuthContext();
+  const colRef = collection(
+    firestore,
+    `users/${user?.uid}/quiz`
+  ) as CollectionReference<IQuiz>;
+  const [quizzes, loading, error] = useCollectionDataOnce(colRef);
 
   useEffect(() => {
     if (!user) router.push(LOGIN);
-  }, [user]);
+  }, [user, router]);
 
   return (
     <>
@@ -74,6 +82,76 @@ const Home: NextPage = () => {
               Explore
             </Typography>
             <div className="flex flex-wrap justify-center gap-6">
+              {loading && (
+                <>
+                  {[0, 1, 2].map((num) => (
+                    <Skeleton
+                      key={num}
+                      variant="rectangular"
+                      className="w-52 h-52 md:w-80 md:h-80"
+                    />
+                  ))}
+                </>
+              )}
+
+              {quizzes?.map(
+                (
+                  {
+                    createdAt,
+                    answers,
+                    id,
+                    timeRemaining,
+                    questions: { area, level },
+                  },
+                  index
+                ) => {
+                  const { date, time } = getDateTime(
+                    createdAt.seconds,
+                    createdAt.nanoseconds
+                  );
+
+                  return (
+                    <Link key={index} href={`/quiz/${user?.uid}/${id}`}>
+                      <a
+                        className="flex flex-col items-center justify-between gap-6 cursor-pointer w-52 h-52 md:w-80 md:h-80 bg-background-paper border-explore"
+                        onClick={() => localStorage.clear()}
+                      >
+                        <div className="flex flex-col items-center justify-center flex-grow gap-8">
+                          <Typography variant="h4">
+                            {getPercentageCompleted(answers)}%
+                          </Typography>
+                          <div className="flex flex-col items-center">
+                            <Typography variant="body1" color="text.disabled">
+                              {area.toUpperCase()}, Level {level}
+                            </Typography>
+                            <Typography variant="caption" color="text.disabled">
+                              {date} {time}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              color="text.disabled"
+                              textAlign="center"
+                            >
+                              Time left: {durationToHHMMSS(timeRemaining)}
+                            </Typography>
+                          </div>
+                        </div>
+                        <LinearProgress
+                          className="flex-grow-0"
+                          variant="determinate"
+                          value={getPercentageCompleted(answers)}
+                          color="secondary"
+                          sx={{
+                            height: 3,
+                            width: "100%",
+                          }}
+                        />
+                      </a>
+                    </Link>
+                  );
+                }
+              )}
+
               <div
                 className="flex flex-col items-center justify-center gap-6 p-8 cursor-pointer w-52 h-52 md:w-80 md:h-80 bg-background-paper rounded-xl border-explore"
                 onClick={() => {
@@ -82,7 +160,9 @@ const Home: NextPage = () => {
                   const quizLevel = Math.round(Math.random() * 9) + 1;
                   localStorage.clear();
 
-                  router.push(`${MAIN_QUIZ}/${user?.uid}/${currentQuizArea}/${quizLevel}`);
+                  router.push(
+                    `${MAIN_QUIZ}/${user?.uid}/${currentQuizArea}/${quizLevel}`
+                  );
                 }}
               >
                 <div className="flex items-center justify-center w-12 h-12 bg-teal-700 rounded-3xl">
@@ -123,11 +203,6 @@ const Home: NextPage = () => {
             </div>
           </section>
           <History />
-          <Link href={MAIN_QUIZ}>
-            <a>
-              <Button variant="outlined">Go to Quiz</Button>
-            </a>
-          </Link>
         </div>
       </Layout>
     </>

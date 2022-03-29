@@ -70,7 +70,7 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
             path={`${MAIN_QUIZ}/${user?.uid}`}
           />
           <NavItem
-            isActive={router.pathname === FAVORITES}
+            isActive={router.pathname.includes(FAVORITES)}
             name="Favorites"
             path={`${FAVORITES}/${user?.uid}`}
           />

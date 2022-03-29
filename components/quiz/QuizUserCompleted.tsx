@@ -7,15 +7,18 @@ import {
 import { FunctionComponent, useContext } from "react";
 import { useAuthContext } from "../../lib/data/contexts/AuthContext";
 import capitalize from "../../lib/utils/capitalize";
+import getPercentageCompleted from "../../lib/utils/getPercentageCompleted";
 import { QuizContext } from "../../pages/quiz/[[...slug]]";
 
 const QuizUserCompleted: FunctionComponent = () => {
-  const { questions: {area, level}, answers } = useContext(QuizContext)!;
+  const {
+    questions: { area, level },
+    answers,
+  } = useContext(QuizContext)!;
   const {
     authState: [user],
   } = useAuthContext();
-  const percentageCompleted =
-    answers.filter((answer) => answer !== null).length * 10;
+  const percentageCompleted = getPercentageCompleted(answers);
 
   return (
     <div className="flex flex-col justify-between gap-3 sm:flex-row md:gap-0">
@@ -26,7 +29,9 @@ const QuizUserCompleted: FunctionComponent = () => {
         />
         <div className="flex flex-col justify-center">
           <Typography lineHeight={1}>
-            {user?.displayName ? capitalize(user?.displayName) : "Anonymous User"}
+            {user?.displayName
+              ? capitalize(user?.displayName)
+              : "Anonymous User"}
           </Typography>
           <Typography variant="caption" color="text.disabled">
             {area.toUpperCase()}, Level {level}

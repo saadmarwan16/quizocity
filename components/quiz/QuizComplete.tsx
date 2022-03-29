@@ -1,10 +1,5 @@
 import { Button, Typography } from "@mui/material";
-import {
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { FunctionComponent, useContext, useEffect, useState } from "react";
 import StarIcon from "@mui/icons-material/Star";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -13,12 +8,23 @@ import { HOME, LEADERBOARD } from "../../lib/constants/routes";
 import UserPoints from "../shared/UserPoints";
 import { QuizContext } from "../../pages/quiz/[[...slug]]";
 import getScore from "../../lib/utils/getScore";
+import { firestore, serverTimestamp } from "../../lib/utils/firebaseInit";
+import {
+  addDoc,
+  collection,
+  CollectionReference,
+  deleteDoc,
+  doc,
+  DocumentReference,
+  writeBatch,
+} from "firebase/firestore";
+import { IHistory } from "../../lib/data_types/interfaces";
 
 interface QuizCompleteProps {}
 
 const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
   const router = useRouter();
-  const { questions, answers } = useContext(QuizContext)!;
+  const { questions, answers, path, historyPath } = useContext(QuizContext)!;
   const [score, setScore] = useState<number | null>(null);
   const [earnedPoints, setEarnedPoints] = useState<number>(0);
   const [correctAnswers, setCorrectAnswers] = useState<string[]>([]);
@@ -32,8 +38,23 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
     setScore(currentScore);
     setCorrectAnswers(currentCorrectAnswers);
     setEarnedPoints(points);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [answers, questions.quizlist]);
+  }, [answers, questions, questions.quizlist]);
+
+  const saveQuizHistory = async () => {
+    const ref = doc(firestore, path);
+    const historyRef = collection(
+      firestore,
+      historyPath
+    ) as CollectionReference<IHistory>;
+
+    await deleteDoc(ref);
+    await addDoc<IHistory>(historyRef, {
+      createdAt: serverTimestamp(),
+      area: questions.area,
+      level: questions.level,
+      points: earnedPoints,
+    });
+  };
 
   return (
     <div className="flex flex-col items-center w-full p-3 md:-6">
@@ -43,14 +64,14 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
       <div className="mb-10">
         <Typography variant="h5" className="font-bold text-center">
           {score && score < 4 && "Practise..."}
-          {score && score < 8 && "Improvement..."}
+          {score && score >= 4 && score < 8 && "Improvement..."}
           {score && score >= 8 && "Wow..."}
         </Typography>
         <Typography className="text-text-secondary">
           {score &&
             score < 4 &&
             "Nobody gets it right on their first few attempts"}
-          {score && score < 8 && "There is always more room for improvement"}
+          {score && score >= 4 && score < 8 && "There is always more room for improvement"}
           {score && score >= 8 && "That was breath-taking. Keep it up"}
         </Typography>
       </div>
@@ -98,6 +119,7 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
           variant="outlined"
           color="secondary"
           onClick={async () => {
+            await saveQuizHistory();
             await router.push(HOME);
           }}
         >
@@ -107,6 +129,7 @@ const QuizComplete: FunctionComponent<QuizCompleteProps> = () => {
           variant="contained"
           color="secondary"
           onClick={async () => {
+            await saveQuizHistory();
             await router.push(LEADERBOARD);
           }}
         >

@@ -10,9 +10,11 @@ import {
   setDoc,
   Timestamp as FirebaseTimestamp,
   serverTimestamp as firebaseServerTimestamp,
+  writeBatch,
+  CollectionReference,
 } from "firebase/firestore";
 import { initialAnswers } from "../data";
-import { IQuestions } from "../data_types/interfaces";
+import { IQuestions, IQuiz } from "../data_types/interfaces";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-QjPybUKXhsnDy9o8dEhrAcwCKUE2pM4",
@@ -56,13 +58,22 @@ export const fetchQuiz = async (
     }
     const quizRef = collection(firestore, `users/${userId}/quiz`);
     const quizDocRef = await addDoc(quizRef, {
+      createdAt: serverTimestamp(),
       questions: { ...questions },
       answers: initialAnswers,
       questionsPointer: 1,
+      timeRemaining: 480,
     });
-    await setDoc(currentQuizRef, {
+    const batch = writeBatch(firestore);
+    const quizWithIdRef = doc(quizRef, `/${quizDocRef.id}`);
+    batch.set(currentQuizRef, {
       currentQuizId: quizDocRef.id,
     });
+    batch.update(quizWithIdRef, {
+      id: quizDocRef.id,
+    });
+
+    await batch.commit();
 
     return quizDocRef.id;
   };
@@ -86,7 +97,7 @@ export const getDateTime = (seconds: number, nanoseconds: number) => {
   const timestamp = new Timestamp(seconds, nanoseconds);
   const dateTime = new Date(timestamp.toMillis());
 
-  const time = dateTime.toTimeString().split(' ')
+  const time = dateTime.toTimeString().split(" ");
 
   return {
     date: dateTime.toDateString(),

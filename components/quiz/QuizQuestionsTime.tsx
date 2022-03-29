@@ -1,11 +1,26 @@
 import { CircularProgress, Typography } from "@mui/material";
-import { FunctionComponent, useContext } from "react";
-import { TimerContext } from "../../lib/data/providers";
+import { FunctionComponent, useContext, useEffect, useState } from "react";
+import { QuizLocationContext, TimerContext } from "../../lib/data/providers";
 import { QuizContext } from "../../pages/quiz/[[...slug]]";
 
 const QuizQuestionsTime: FunctionComponent = () => {
   const { questionsPointer } = useContext(QuizContext)!;
-  const timer = useContext(TimerContext);
+  const firebaseTimer = useContext(TimerContext);
+  const {setQuizLocation} = useContext(QuizLocationContext)!;
+  const [timer, setTimer] = useState<number>(firebaseTimer);
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setTimer((timer) => (timer -= 1));
+    }, 1000);
+
+    if (timer <= 0) {
+      clearTimeout(timerId);
+      setQuizLocation("complete");
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timer]);
 
   return (
     <div className="flex flex-col justify-between mt-8 sm:mt-4 sm:flex-row sm:items-center">
