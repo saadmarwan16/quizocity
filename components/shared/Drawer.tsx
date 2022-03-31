@@ -17,13 +17,19 @@ import LoginIcon from "@mui/icons-material/Login";
 import {
   FAVORITES,
   MAIN_QUIZ,
-  PERFORMANCE,
+  LEADERBOARD,
   PROFILE,
+  HOME,
 } from "../../lib/constants/routes";
+import { useAuthContext } from "../../lib/data/contexts/AuthContext";
 
 export default function Drawer() {
   const router = useRouter();
   const [open, setOpen] = useState<boolean>(false);
+  const {
+    authState: [user],
+    signOut,
+  } = useAuthContext();
 
   const closeDrawer = (close: () => void) => {
     setOpen(false);
@@ -49,15 +55,13 @@ export default function Drawer() {
       >
         <div className="flex flex-col justify-between h-screen bg-background-paper w-52">
           <div>
-            <div className="flex flex-col items-center gap-3 pt-8 pb-2">
+            <div className="flex flex-col items-center gap-3 pt-8 pb-2" onClick={() => router.push(HOME)}>
               <Avatar alt="logo" src="/logo.png" className="w-32 h-32" />
-              <Typography variant="h4">
-                Quizocity
-              </Typography>
+              <Typography variant="h4">Quizocity</Typography>
             </div>
             <Divider />
             <List className="px-4">
-            <ListItem
+              <ListItem
                 button
                 onClick={() => closeDrawer(() => router.push(PROFILE))}
                 className={`mt-2 pl-6 ${
@@ -68,33 +72,41 @@ export default function Drawer() {
               </ListItem>
               <ListItem
                 button
-                onClick={() => closeDrawer(() => router.push(MAIN_QUIZ))}
+                onClick={() =>
+                  closeDrawer(() => router.push(`/${MAIN_QUIZ}/${user?.uid}`))
+                }
                 className={`mt-2 pl-6 ${
-                  router.pathname === MAIN_QUIZ ? "bg-teal-600" : null
+                  router.pathname.includes(MAIN_QUIZ) ? "bg-teal-600" : null
                 } hover:bg-teal-700 rounded-lg`}
               >
                 <ListItemText primary={"Quiz"} />
               </ListItem>
               <ListItem
                 button
-                onClick={() => closeDrawer(() => router.push(FAVORITES))}
+                onClick={() =>
+                  closeDrawer(() => router.push(`/${FAVORITES}/${user?.uid}`))
+                }
                 className={`mt-2 pl-6 ${
-                  router.pathname === FAVORITES ? "bg-teal-600" : null
+                  router.pathname.includes(FAVORITES) ? "bg-teal-600" : null
                 } hover:bg-teal-700 rounded-lg`}
               >
                 <ListItemText primary={"Favorites"} />
               </ListItem>
               <ListItem
                 button
-                onClick={() => closeDrawer(() => router.push(PERFORMANCE))}
+                onClick={() => closeDrawer(() => router.push(LEADERBOARD))}
                 className={`mt-2 mb-2 pl-6 ${
-                  router.pathname === PERFORMANCE ? "bg-teal-600" : null
+                  router.pathname === LEADERBOARD ? "bg-teal-600" : null
                 } hover:bg-teal-700 rounded-lg`}
               >
-                <ListItemText primary={"Perfomance"} />
+                <ListItemText primary={"Leaderboard"} />
               </ListItem>
               <Divider />
-              <ListItem button className={`pl-1 hover:bg-teal-700 rounded-lg mt-4`}>
+              <ListItem
+                button
+                className={`pl-1 hover:bg-teal-700 rounded-lg mt-4`}
+                onClick={() => signOut()}
+              >
                 <ListItemButton>
                   <ListItemIcon className="pr-2 text-white min-w-fit">
                     <LoginIcon />

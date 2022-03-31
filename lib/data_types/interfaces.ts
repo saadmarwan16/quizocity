@@ -22,6 +22,7 @@ export interface IQuiz {
   questionsPointer: number;
   createdAt: any;
   timeRemaining: number;
+  totalTime: number;
 }
 
 export interface IQuizContext {
@@ -33,6 +34,7 @@ export interface IQuizContext {
   answers: TAnswers;
   questionsPointer: number;
   timeRemaining: number;
+  totalTime: number;
 }
 
 export interface ILoginInput {

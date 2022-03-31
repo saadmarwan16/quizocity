@@ -63,6 +63,9 @@ export const fetchQuiz = async (
       answers: initialAnswers,
       questionsPointer: 1,
       timeRemaining: 480,
+      totalTime: 480,
+      // timeRemaining: 480000,
+      // totalTime: 480000,
     });
     const batch = writeBatch(firestore);
     const quizWithIdRef = doc(quizRef, `/${quizDocRef.id}`);

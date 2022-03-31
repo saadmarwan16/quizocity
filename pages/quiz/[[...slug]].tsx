@@ -13,6 +13,7 @@ import { doc, DocumentReference } from "firebase/firestore";
 import { MAIN_QUIZ } from "../../lib/constants/routes";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import QuizSkeleton from "../../components/quiz/QuizSkeleton";
+import QuizTimer from "../../components/quiz/QuizTimer";
 
 export const QuizContext = createContext<IQuizContext | null>(null);
 
@@ -29,9 +30,6 @@ const Quiz: NextPage<PageProps> = ({ path, favoritesPath, historyPath }) => {
 
   return (
     <Layout pageName="Quiz">
-      {/* <div className="flex flex-col justify-center w-full min-h-screen p-8 mx-auto md:w-4/5 bg-background md:bg-background-paper rounded-xl md:min-h-fit">
-        <QuizSkeleton />
-      </div> */}
       {loading && (
         <div className="flex flex-col justify-center w-full min-h-screen p-8 mx-auto md:w-4/5 bg-background md:bg-background-paper rounded-xl md:min-h-fit">
           <QuizSkeleton />
@@ -48,6 +46,7 @@ const Quiz: NextPage<PageProps> = ({ path, favoritesPath, historyPath }) => {
             historyPath,
             id: snapshot.id,
             timeRemaining: snapshot.timeRemaining,
+            totalTime: snapshot.totalTime,
             questions: snapshot.questions,
             answers: snapshot.answers,
             questionsPointer: snapshot.questionsPointer,
@@ -56,15 +55,7 @@ const Quiz: NextPage<PageProps> = ({ path, favoritesPath, historyPath }) => {
           <QuizLocationContext.Provider
             value={{ quizLocation, setQuizLocation }}
           >
-            <TimerContext.Provider value={snapshot.timeRemaining}>
-              {(quizLocation === "main" || quizLocation === null) && (
-                <div className="flex flex-col justify-center w-full min-h-screen p-8 mx-auto md:w-4/5 bg-background md:bg-background-paper rounded-xl md:min-h-fit">
-                  <QuizBody />
-                </div>
-              )}
-              {quizLocation === "submit" && <QuizSubmit />}
-              {quizLocation === "complete" && <QuizComplete />}
-            </TimerContext.Provider>
+            <QuizTimer currentTimer={snapshot.timeRemaining} />
           </QuizLocationContext.Provider>
         </QuizContext.Provider>
       )}

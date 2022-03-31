@@ -20,7 +20,7 @@ import { firestore, getDateTime } from "../lib/utils/firebaseInit";
 import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
 import { collection, CollectionReference } from "firebase/firestore";
 import { IQuiz } from "../lib/data_types/interfaces";
-import durationToHHMMSS from "../lib/utils/durationToHHMMSS";
+import durationToMMSS from "../lib/utils/durationToMMSS";
 import getPercentageCompleted from "../lib/utils/getPercentageCompleted";
 
 const style = {
@@ -78,7 +78,7 @@ const Home: NextPage = () => {
       <Layout pageName="Home">
         <div className="w-full">
           <section className="mb-12">
-            <Typography variant="h4" className="mb-4 text-3xl md:text-4xl">
+            <Typography variant="h6" className="mt-12 mb-3 font-semibold">
               Explore
             </Typography>
             <div className="flex flex-wrap justify-center gap-6">
@@ -132,7 +132,7 @@ const Home: NextPage = () => {
                               color="text.disabled"
                               textAlign="center"
                             >
-                              Time left: {durationToHHMMSS(timeRemaining)}
+                              Time left: {durationToMMSS(timeRemaining)}
                             </Typography>
                           </div>
                         </div>

@@ -10,6 +10,7 @@ import { QuizContext } from "../../pages/quiz/[[...slug]]";
 import { TAnswers } from "../../lib/data_types/types";
 import { firestore } from "../../lib/utils/firebaseInit";
 import { doc, updateDoc } from "firebase/firestore";
+import { TimerContext } from "../../lib/data/providers";
 
 const MainQuiz: FunctionComponent = () => {
   const {
@@ -20,6 +21,7 @@ const MainQuiz: FunctionComponent = () => {
   } = useContext(QuizContext)!;
   const { option, quiz } = quizlist[questionsPointer - 1];
   const answer = answers[questionsPointer - 1];
+  const timer = useContext(TimerContext)!;
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const res: TAnswers = answers.map((value, index) =>
@@ -28,6 +30,7 @@ const MainQuiz: FunctionComponent = () => {
     const ref = doc(firestore, path);
     updateDoc(ref, {
       answers: res,
+      timeRemaining: timer,
     });
   };
 

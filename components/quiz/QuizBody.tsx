@@ -6,7 +6,7 @@ import QuizQuestionsTime from "./QuizQuestionsTime";
 import Divider from "@mui/material/Divider";
 import QuizNextQuestionButton from "./QuizNextQuestionButton";
 import { Button, Typography } from "@mui/material";
-import { QuizLocationContext } from "../../lib/data/providers";
+import { QuizLocationContext, TimerContext } from "../../lib/data/providers";
 import { QuizContext } from "../../pages/quiz/[[...slug]]";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -33,6 +33,7 @@ const QuizBody: FunctionComponent = () => {
     answers,
   } = useContext(QuizContext)!;
   const { setQuizLocation } = useContext(QuizLocationContext)!;
+  const timer = useContext(TimerContext)!;
 
   return (
     <>
@@ -138,6 +139,7 @@ const QuizBody: FunctionComponent = () => {
 
             batch.update(questionRef, {
               questions: { ...data.questions, quizlist: currentQuizlist },
+              timeRemaining: timer,
             });
 
             await batch.commit();

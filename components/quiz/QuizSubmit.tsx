@@ -7,6 +7,7 @@ import getScore from "../../lib/utils/getScore";
 import { doc, writeBatch } from "firebase/firestore";
 import { useAuthContext } from "../../lib/data/contexts/AuthContext";
 import { firestore, increment } from "../../lib/utils/firebaseInit";
+import durationToMMSS from "../../lib/utils/durationToMMSS";
 
 const QuizSubmit: FunctionComponent = () => {
   const {
@@ -21,7 +22,7 @@ const QuizSubmit: FunctionComponent = () => {
   return (
     <div className="flex flex-col w-full p-4 sm:p-8 md:flex-row md:gap-6">
       <div className="flex items-center justify-center gap-8 mb-8 sm:gap-12 md:gap-16 md:flex-col md:basis-1/3">
-        <div>
+        <div className="flex flex-col items-center">
           <Typography className="text-sm md:text-base text-text-secondary">
             PERCENTAGE COMPLETE
           </Typography>
@@ -29,18 +30,13 @@ const QuizSubmit: FunctionComponent = () => {
             {percentageCompleted}%
           </Typography>
         </div>
-        <div>
+        <div className="flex flex-col items-center">
           <Typography className="text-sm md:text-base text-text-secondary">
             TIME REMAINING
           </Typography>
-          <div className="flex items-end">
-            <Typography className="text-3xl sm:text-5xl md:text-8xl">
-              {timer}
-            </Typography>
-            <Typography className="pl-1 mb-1 text-sm md:text-lg text-text-disabled">
-              seconds
-            </Typography>
-          </div>
+          <Typography className="text-3xl sm:text-5xl md:text-8xl">
+            {durationToMMSS(timer)}
+          </Typography>
         </div>
       </div>
       <div className="flex flex-col gap-3 md:basis-2/3">

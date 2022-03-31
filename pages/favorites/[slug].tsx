@@ -11,7 +11,7 @@ import UserPoints from "../../components/shared/UserPoints";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { collection, CollectionReference, getDocs } from "firebase/firestore";
-import { firestore, getDateTime } from "../../lib/utils/firebaseInit";
+import { firestore } from "../../lib/utils/firebaseInit";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { IFavorite, IFavoriteQuestion } from "../../lib/data_types/interfaces";
 import { useEffect, useState } from "react";
@@ -51,7 +51,7 @@ const Favorites: NextPage<FavoritesProps> = ({ path }) => {
           {loading && (
             <div className="flex flex-col gap-2">
               {[0, 1, 2, 3, 4].map((num) => (
-                <Skeleton key={num} height={75}></Skeleton>
+                <Skeleton key={num} height={45} variant='rectangular' />
               ))}
             </div>
           )}
@@ -62,8 +62,6 @@ const Favorites: NextPage<FavoritesProps> = ({ path }) => {
             <div className="flex flex-col gap-2">
               {flattendFavorites.map(
                 ({ area, correct, level, option, questionNumber, quiz }) => {
-                  const { date, time } = getDateTime(9856325, 45236885);
-
                   return (
                     <Accordion
                       key={`${area}${level}${correct}${questionNumber}`}
@@ -153,7 +151,6 @@ export const getStaticProps: GetStaticProps = ({ params }) => {
 
   return {
     props: {
-      // path: `questions`,
       path: `users/${userId}/favorites`,
     },
   };
