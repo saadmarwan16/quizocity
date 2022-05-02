@@ -50,11 +50,9 @@ const Drawer: FunctionComponent<DrawerProps> = () => {
       >
         <MenuIcon />
       </IconButton>
-      <SwipeableDrawer
-        anchor="left"
+      <CustomSwipeableDrawer
         open={open}
-        onClose={() => setOpen(false)}
-        onOpen={() => {}}
+        setOpen={() => setOpen(false)}
       >
         <div className="flex flex-col justify-between h-screen bg-background-paper w-52">
           <div>
@@ -135,9 +133,33 @@ const Drawer: FunctionComponent<DrawerProps> = () => {
             </div>
           </div>
         </div>
-      </SwipeableDrawer>
+      </CustomSwipeableDrawer>
     </div>
   );
 };
 
 export default Drawer;
+
+interface CustomSwipeableDrawerProps {
+  open: boolean;
+  setOpen: (isOpen: boolean) => void;
+}
+
+const CustomSwipeableDrawer: FunctionComponent<CustomSwipeableDrawerProps> = ({
+  children,
+  open,
+  setOpen,
+}) => {
+  return (
+    <>
+      <SwipeableDrawer
+        anchor="left"
+        open={open}
+        onClose={() => setOpen(false)}
+        onOpen={() => {}}
+      >
+        <>{children}</>
+      </SwipeableDrawer>
+    </>
+  );
+};
