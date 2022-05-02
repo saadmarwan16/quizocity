@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FunctionComponent, useState } from "react";
 import { useRouter } from "next/router";
 import {
   Avatar,
@@ -23,7 +23,9 @@ import {
 } from "../../lib/constants/routes";
 import { useAuthContext } from "../../lib/data/contexts/AuthContext";
 
-export default function Drawer() {
+interface DrawerProps {}
+
+const Drawer: FunctionComponent<DrawerProps> = () => {
   const router = useRouter();
   const [open, setOpen] = useState<boolean>(false);
   const {
@@ -35,6 +37,7 @@ export default function Drawer() {
     setOpen(false);
     close();
   };
+
   return (
     <div className="md:hidden">
       <IconButton
@@ -55,7 +58,10 @@ export default function Drawer() {
       >
         <div className="flex flex-col justify-between h-screen bg-background-paper w-52">
           <div>
-            <div className="flex flex-col items-center gap-3 pt-8 pb-2" onClick={() => router.push(HOME)}>
+            <div
+              className="flex flex-col items-center gap-3 pt-8 pb-2"
+              onClick={() => router.push(HOME)}
+            >
               <Avatar alt="logo" src="/logo.png" className="w-32 h-32" />
               <Typography variant="h4">Quizocity</Typography>
             </div>
@@ -132,4 +138,6 @@ export default function Drawer() {
       </SwipeableDrawer>
     </div>
   );
-}
+};
+
+export default Drawer;
