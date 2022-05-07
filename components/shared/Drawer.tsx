@@ -50,16 +50,15 @@ const Drawer: FunctionComponent<DrawerProps> = () => {
       >
         <MenuIcon />
       </IconButton>
-      <CustomSwipeableDrawer
+      <SwipeableDrawer
+        anchor="left"
         open={open}
-        setOpen={() => setOpen(false)}
+        onClose={() => setOpen(false)}
+        onOpen={() => {}}
       >
         <div className="flex flex-col justify-between h-screen bg-background-paper w-52">
           <div>
-            <div
-              className="flex flex-col items-center gap-3 pt-8 pb-2"
-              onClick={() => router.push(HOME)}
-            >
+            <div className="flex flex-col items-center gap-3 pt-8 pb-2" onClick={() => router.push(HOME)}>
               <Avatar alt="logo" src="/logo.png" className="w-32 h-32" />
               <Typography variant="h4">Quizocity</Typography>
             </div>
@@ -133,33 +132,9 @@ const Drawer: FunctionComponent<DrawerProps> = () => {
             </div>
           </div>
         </div>
-      </CustomSwipeableDrawer>
+      </SwipeableDrawer>
     </div>
   );
-};
-
-export default Drawer;
-
-interface CustomSwipeableDrawerProps {
-  open: boolean;
-  setOpen: (isOpen: boolean) => void;
 }
 
-const CustomSwipeableDrawer: FunctionComponent<CustomSwipeableDrawerProps> = ({
-  children,
-  open,
-  setOpen,
-}) => {
-  return (
-    <>
-      <SwipeableDrawer
-        anchor="left"
-        open={open}
-        onClose={() => setOpen(false)}
-        onOpen={() => {}}
-      >
-        <>{children}</>
-      </SwipeableDrawer>
-    </>
-  );
-};
+export default Drawer;
